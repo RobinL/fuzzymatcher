@@ -4,10 +4,10 @@ addme package
 Submodules
 ----------
 
-addme\.delete module
---------------------
+addme\.mymodule module
+----------------------
 
-.. automodule:: addme.delete
+.. automodule:: addme.mymodule
     :members:
     :undoc-members:
     :show-inheritance:
