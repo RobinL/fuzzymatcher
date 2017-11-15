@@ -11,6 +11,7 @@ Welcome to fuzzymatcher's documentation!
    :caption: Contents:
 
    readme
+   modules
 
 ANother title
 ==================
