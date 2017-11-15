@@ -12,10 +12,9 @@ Welcome to fuzzymatcher's documentation!
 
    readme
 
-Indices and tables
+ANother title
 ==================
 
-* modules
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
