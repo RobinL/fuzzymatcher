@@ -39,7 +39,9 @@ Note that you need to rerun
 ::
     sphinx-apidoc -o source/ ../addme/
 
-Whenever you change the structure of your modules
+Whenever you change the structure of your modules.  See here:
+https://stackoverflow.com/questions/28481471/sphinx-keeping-the-api-updated/28481785#28481785
+
 
 
 Pip install
