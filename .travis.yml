@@ -10,5 +10,6 @@ install:
   - pip install pandas  # e.g. see https://github.com/pallets/jinja/blob/master/.travis.yml
   - pip install codecov
   - pip install coverage
+  - pip install pylint
 after_success:
   - codecov
