@@ -3,6 +3,7 @@
     - 3.6
     - nightly
   script:
-    - pytest
+    - python -m unittest discover
+    - codecov
   install:
-    - pip install pandas
+    - pip install python-levenshtein  # e.g. see https://github.com/pallets/jinja/blob/master/.travis.yml
