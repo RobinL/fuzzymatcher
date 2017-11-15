@@ -5,7 +5,7 @@ Tests
 """
 
 import unittest
-from fuzzymatcher.delete import addme
+from addme.mymodule import addme
 
 class AddTest(unittest.TestCase):
     """
