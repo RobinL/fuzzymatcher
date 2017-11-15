@@ -32,6 +32,20 @@ To pip install, we need a valid ```setup.py``` file, and then the package can be
 
     pip install git+https://github.com/RobinL/python_package_template.git
 
+Unit testing
+~~~~~~~~~~~~
+
+Having reviewed the options, I chose to use the standard unittest library for unit testing
+
+It seems simplest to use the default Python module.  The main advantage of ```pytest``` in a simple project seems to be less boilerplate, but the differences are not enormous.  
+
+To run the tests locally, we can just run:
+
+::
+
+    python -m unittest discover
+
+In the travis file we run them, whilst also producing a coverage report and syncing with codecov.io
 
 
 Things to remember:
