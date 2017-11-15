@@ -16,7 +16,7 @@ class AddTest(unittest.TestCase):
         """
         Adding two numbers should give the correct answer
         """
-        test1 = addme(1, 2) == 4
+        test1 = addme(1, 2) == 3
         print("testing first thing")
         self.assertTrue(test1, "Adding two numbers should give the correct answer")
 
