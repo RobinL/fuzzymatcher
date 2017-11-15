@@ -21,9 +21,8 @@ def addme(num1, num2):
     """
 
     log.debug("hello")
-
+    # log.warning("this would cause travis to fail")
     total = pd.Series([num1, num2]).sum()
 
-    a = 1 # Pylint will warn here
-
+    # a = 1 # Pylint would warn here, causing the build to fail
     return total
