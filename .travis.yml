@@ -5,8 +5,9 @@ python:
 script:
   - python -m unittest discover
   - coverage run -m unittest discover
+  - pylint fuzzymatcher/
 install:
-  - pip install python-levenshtein  # e.g. see https://github.com/pallets/jinja/blob/master/.travis.yml
+  - pip install pandas  # e.g. see https://github.com/pallets/jinja/blob/master/.travis.yml
   - pip install codecov
   - pip install coverage
 after_success:
