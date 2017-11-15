@@ -21,7 +21,6 @@ def addme(num1, num2):
     """
 
     log.debug("hello")
-    log.warning("omg")
 
     total = pd.Series([num1, num2]).sum()
 
