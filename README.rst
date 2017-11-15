@@ -37,6 +37,7 @@ https://samnicholls.net/2016/06/15/how-to-sphinx-readthedocs/
 Note that you need to rerun
 
 ::
+
     sphinx-apidoc -o source/ ../addme/
 
 Whenever you change the structure of your modules.  See here:
