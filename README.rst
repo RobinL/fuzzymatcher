@@ -1,6 +1,10 @@
 A template Python package 
 =========================
 
+This repo contains a tiny Python package with a number of features:
+
+- The API is autodocumented using Sphinx, and can be viewed on `ReadTheDocs <http://python-package-test-rl.readthedocs.io/en/latest/>`_.
+
 Notes
 -----
 
@@ -24,3 +28,4 @@ Things to remember:
 
 ReadTheDocs will fail by default if your project has dependencies (e.g. pandas)
 To correct, go to Advanced Settings in the ReadTheDocs web interface, and point it at your requirements.txt file.
+
