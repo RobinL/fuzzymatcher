@@ -5,7 +5,7 @@
   :target: https://codecov.io/gh/RobinL/python_package_test_rl
 
 .. image:: https://readthedocs.org/projects/python-package-test-rl/badge/?version=latest
-:target: http://python-package-test-rl.readthedocs.io/en/latest/?badge=latest
+:target: http://python-package-test-rl.readthedocs.io/en/latest/
 :alt: Documentation Status
 
 A template Python package 
