@@ -9,23 +9,30 @@ This repo contains a tiny Python package with a number of features:
 - Demonstrates how to set up CI with Travis, which runs unit tests and a linter
 - Demonstrates how to use ```setup.py``` to enable the package to be installed using ```pip```.
 
-Notes
------
+References
+----------
 
-A template Python package, including documentation, testing, code coverage etc.
+Autodocumented API
+~~~~~~~~~~~~~~~~~~
 
-Can be installed from Github using:
+This relies on the use of Python docstrings combined with Sphinx.
+
+Google docstring style can be found here:
+http://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html
+
+More information on setting up Sphinx can be found here:
+https://samnicholls.net/2016/06/15/how-to-sphinx-readthedocs/
+
+
+Pip install
+~~~~~~~~~~~
+To pip install, we need a valid ```setup.py``` file, and then the package can be installed from Github using:
 
 ::
 
     pip install git+https://github.com/RobinL/python_package_template.git
 
 
-Use Google docstring style:
-http://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html
-
-More information about setting up Sphinx, especially with ReadTheDocs:
-https://samnicholls.net/2016/06/15/how-to-sphinx-readthedocs/
 
 Things to remember:
 -------------------
