@@ -4,6 +4,10 @@ A template Python package
 This repo contains a tiny Python package with a number of features:
 
 - The API is autodocumented using Sphinx, and can be viewed on `ReadTheDocs <http://python-package-test-rl.readthedocs.io/en/latest/>`_.
+- Demonstrates how to properly use logging.
+- Demonstrates how to generate code coverage report 
+- Demonstrates how to set up CI with Travis, which runs unit tests and a linter
+- Demonstrates how to use ```setup.py``` to enable the package to be installed using ```pip```.
 
 Notes
 -----
