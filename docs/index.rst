@@ -11,9 +11,8 @@ Welcome to fuzzymatcher's documentation!
    :caption: Contents:
 
    readme
-   modules
 
-ANother title
+ANother title here
 ==================
 
 * :ref:`genindex`
