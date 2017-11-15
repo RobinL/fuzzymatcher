@@ -12,7 +12,7 @@ Welcome to addme's documentation!
 
    readme
 
-ANother title here
+Another title goes here
 ==================
 
 * :ref:`genindex`
