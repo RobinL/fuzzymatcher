@@ -20,4 +20,6 @@ def addme(num1, num2):
 
     total = pd.Series([num1, num2]).sum()
 
+    a = 1 # Pylint will warn here
+
     return total
