@@ -15,6 +15,7 @@ Welcome to fuzzymatcher's documentation!
 Indices and tables
 ==================
 
+* modules
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`

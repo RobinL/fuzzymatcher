@@ -1,5 +1,5 @@
-A template Python package, 
-=====
+A template Python package 
+=========================
 
 Notes
 -----
