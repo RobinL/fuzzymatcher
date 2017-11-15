@@ -10,7 +10,7 @@ import pandas as pd
 log = logging.getLogger(__name__)
 
 def addme(num1, num2):
-    """Add two numberss together using pandas Series.sum()
+    """Add two numbers together using pandas Series.sum()
 
     Args:
         num1: A number
