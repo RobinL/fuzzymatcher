@@ -13,7 +13,7 @@ Welcome to addme's documentation!
    readme
 
 Another title goes here
-==================
+=======================
 
 * :ref:`genindex`
 * :ref:`modindex`
