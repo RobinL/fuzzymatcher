@@ -7,3 +7,4 @@
     - codecov
   install:
     - pip install python-levenshtein  # e.g. see https://github.com/pallets/jinja/blob/master/.travis.yml
+    - pip install codecov
