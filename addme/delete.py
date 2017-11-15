@@ -5,7 +5,7 @@ Testing travis
 """
 
 import logging
-import pandas as pd
+# import pandas as pd
 
 log = logging.getLogger(__name__)
 
@@ -23,8 +23,8 @@ def addme(num1, num2):
     log.debug("hello")
     log.warning("omg")
 
-    total = pd.Series([num1, num2]).sum()
-
+    # total = pd.Series([num1, num2]).sum()
+    total = num1 + num2
     a = 1 # Pylint will warn here
 
     return total
