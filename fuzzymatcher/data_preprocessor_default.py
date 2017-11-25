@@ -51,6 +51,7 @@ class DataPreprocessor(DataPreprocessorABC):
         df['_concat_all'] = df['_concat_all'].str.upper()
         df['_concat_all'] = df['_concat_all'].str.replace("'","")
         df['_concat_all'] = df['_concat_all'].str.replace('[^\w\s]',' ')
+        df['_concat_all'] = df['_concat_all'].str.replace('\s{2,100}',' ')
 
     @staticmethod
     def add_id(df, prefix):

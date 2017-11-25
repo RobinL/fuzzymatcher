@@ -1,4 +1,7 @@
 import sqlite3
+from fuzzymatcher.record import Record
+
+
 class DataGetter:
 
     """
@@ -55,11 +58,14 @@ class DataGetter:
 
         get_records_sql = get_records_sql.format("james john", "100")
 
+        get_records_sql = "select * from fts_target"
         cur = self.con.cursor()
         cur.execute(get_records_sql)
         results = cur.fetchall()
 
-        return results
+        potential_matches = []
+        for r in results:
+            potential_matches.append(Record(r[0], r[1], self.matcher))
 
-
+        return potential_matches
 

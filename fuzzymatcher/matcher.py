@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from fuzzymatcher.record import RecordToMatch
+import pandas as pd
 
 class Matcher:
     """The Matcher coordinates data matching"""
@@ -12,8 +14,6 @@ class Matcher:
         self.data_getter = data_getter
         self.scorer = scorer
         self.top_n_matches = top_n_matches
-
-        self.scorer = scorer
 
     def add_data(self, df_left,
               df_right,
@@ -43,15 +43,10 @@ class Matcher:
 
         # Data preprocessor returns list of dicts, not pd.DataFrame
         self.data_getter.add_data(self)
-
         self.scorer.add_data(self)
-        #return self.data_getter.get_potential_matches_from_record("hello")
-        # self.scorer.add_data(self.data_preprocessor.data_search_within, self.data_preprocessor.data_find_match_for)
-
-
 
         # Get a table with
-        # _match_processed_data
+        print(self._match_processed_data())
 
         # Create a final link_table with fields from original data
         # _format_results()
@@ -61,7 +56,24 @@ class Matcher:
     # ALWAYS INCLUDE UP TO x matches
     def _match_processed_data(self):
 
-        # Probably work entirely in dictionaries here.  No panda
-        pass
+        # This will store all the regords for the link table
+
+        link_table_list = []
+
+
+        for r in self.df_left_processed.iterrows():
+            row = r[1]
+            record_id = row[self.left_id_col]
+
+            record_to_match = RecordToMatch(record_id, row["_concat_all"], self)
+
+            record_to_match.find_and_score_potential_matches()
+            link_table_list.extend(record_to_match.get_link_table_rows())
+
+
+        return pd.DataFrame(link_table_list)
+
+
+
 
 
