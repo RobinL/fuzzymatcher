@@ -1,14 +1,14 @@
 from setuptools import setup
 
 # see https://stackoverflow.com/questions/14399534/reference-requirements-txt-for-the-install-requires-kwarg-in-setuptools-setup-py
-setup(name='addme',
+setup(name='fuzzymatcher',
       version='0.1',
-      description='Add two numbers using the pandas Series sum method',
-      url='https://github.com/RobinL/python_package_template',
+      description='Fuzzy match two pandas dataframes based on one or more common fields',
+      url='https://github.com/RobinL/fuzzymatcher',
       author='Robin Linacre',
       author_email='robinlinacre@hotmail.com',
       license='MIT',
-      packages=['addme'],
+      packages=['fuzzymatcher'],  # The directory to look in for the source code
       setup_requires=['pandas'],
       test_requires=["pylint", "coverage", "codecov"],
       zip_safe=False)
