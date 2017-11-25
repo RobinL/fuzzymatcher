@@ -1,5 +1,5 @@
-fname,lname,dob,another_field
-Alistair,Johnston,20/05/1980,other data
-James,Smith,15/06/1990,more data
-Alisdair,Jonson,20/05/1961,another thing
-David,Williams,01/01/2000,final thing
+id,fname,lname,dob,another_field
+1,Alistair,Johnston,20/05/1980,other data
+2,James,Smith,15/06/1990,more data
+3,Alisdair,Jonson,20/05/1961,another thing
+4,David,Williams,01/01/2000,final thing
