@@ -14,12 +14,11 @@ fuzzymatcher
 
 A Python package that allows the user to fuzzy match two pandas dataframes based on one or more common fields.
 
-Fuzzymatches uses ```sqlite3```'s Full Text Search to find potential matches.
+Fuzzymatches uses ``sqlite3``'s Full Text Search to find potential matches.
 
 It then uses `probabilistic record linkage <https://en.wikipedia.org/wiki/Record_linkage#Probabilistic_record_linkage>`_ to score matches.
 
-Finally it outputs a list of the matches it's found and associated score.
-
+Finally it outputs a list of the matches it has found and associated score.
 
 Usage
 -----
