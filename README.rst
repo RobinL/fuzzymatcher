@@ -23,3 +23,4 @@ Finally it outputs a list of the matches it has found and associated score.
 Usage
 -----
 
+See `examples.ipynb <https://github.com/RobinL/fuzzymatcher/blob/dev/examples.ipynb>`_ for examples of usage and the output.
