@@ -20,9 +20,24 @@ def link_table(df_left,
     s = Scorer()
 
     m = Matcher(dp, dg, s)
-
     m.add_data(df_left, df_right, left_on, right_on,  left_id_col, right_id_col)
-
     m.match_all()
 
-    return m.link_table
+    return m.get_formatted_link_table()
+
+def fuzzy_left_join(df_left,
+            df_right,
+            left_on,
+            right_on,
+            left_id_col = None,
+            right_id_col = None):
+
+    dp = DataPreprocessor()
+    dg = DataGetter()
+    s = Scorer()
+
+    m = Matcher(dp, dg, s)
+    m.add_data(df_left, df_right, left_on, right_on,  left_id_col, right_id_col)
+    m.match_all()
+
+    return m.get_left_join_table()

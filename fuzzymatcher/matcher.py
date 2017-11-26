@@ -43,12 +43,29 @@ class Matcher:
         self.scorer.add_data(self)
 
         # Get a table that contains only the matches, scores and ids
-        link_table = self._match_processed_data()
+        self.link_table = self._match_processed_data()
 
-        link_table = self._add_original_cols_to_link_table(link_table)
+    def get_formatted_link_table(self):
+        return self._add_original_cols_to_link_table(self.link_table)
 
-        self.link_table = link_table
+    def get_left_join_table(self):
+        df = self.df_left.merge(self.link_table, left_on = self.left_id_col, right_on = "__id_left", how="left")
+        df.drop("_concat_all", axis=1, inplace=True)
 
+        df = df.merge(self.df_right, left_on = "__id_right", right_on=self.right_id_col, how="left", suffixes = ("_left", "_right"))
+        df.drop(["_concat_all", "__id_left", "__id_right"], axis=1, inplace=True)
+
+        # Keep records where rank = 1 or there's no rang
+        filter1 = df["__rank"] == 1
+        filter2 = pd.isnull(df["__rank"])
+        df = df[filter1 | filter2]
+        df.drop("__rank", axis=1, inplace=True)
+
+        cols = ["__score"]
+        cols.extend([c for c in df.columns if c != "__score"])
+
+        df = df[cols].rename(columns={"__score": "best_match_score"})
+        return df
 
     def _match_processed_data(self):
 
