@@ -1,13 +1,13 @@
-addme package
+fuzzymatcher package
 =============
 
 Submodules
 ----------
 
-addme\.mymodule module
+fuzzymatcher\.mymodule module
 ----------------------
 
-.. automodule:: addme.mymodule
+.. automodule:: fuzzymatcher.mymodule
     :members:
     :undoc-members:
     :show-inheritance:
@@ -16,7 +16,7 @@ addme\.mymodule module
 Module contents
 ---------------
 
-.. automodule:: addme
+.. automodule:: fuzzymatcher
     :members:
     :undoc-members:
     :show-inheritance:

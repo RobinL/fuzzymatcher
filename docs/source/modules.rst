@@ -1,7 +1,7 @@
-addme
+fuzzymatcher
 =====
 
 .. toctree::
    :maxdepth: 4
 
-   addme
+   fuzzymatcher

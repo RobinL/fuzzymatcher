@@ -9,6 +9,6 @@ setup(name='fuzzymatcher',
       author_email='robinlinacre@hotmail.com',
       license='MIT',
       packages=['fuzzymatcher'],  # The directory to look in for the source code
-      setup_requires=['pandas'],
+      setup_requires=['pandas', 'sqlite3'],
       test_requires=["pylint", "coverage", "codecov"],
       zip_safe=False)
