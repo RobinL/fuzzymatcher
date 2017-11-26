@@ -1,1 +1,3 @@
 pandas>=0.20.3
+metaphone
+sqlite3
