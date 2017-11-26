@@ -26,6 +26,9 @@ class Record:
         random_tokens = random.sample(self.tokens, n)
         return random_tokens
 
+    def __repr__(self):
+        return "ID: {}, Record String: {}".format(self.record_id, self.record_string)
+
 
 class RecordToMatch(Record):
 
@@ -46,15 +49,15 @@ class RecordToMatch(Record):
         rows = []
         for p in self.potential_matches:
             row = {}
-            row[self.matcher.left_id_col] = self.record_id
-            row[self.matcher.right_id_col] = p.record_id
-            row["score"] = p.match_score
+            row["__id_left"] = self.record_id
+            row["__id_right"] = p.record_id
+            row["__score"] = p.match_score
             rows.append(row)
 
-        rows.sort(key=lambda r: r['score'])
+        rows.sort(key=lambda r: r['__score'])
 
         for i, r in enumerate(rows):
-            r["rank"] = i + 1
+            r["__rank"] = i + 1
 
         return rows
 

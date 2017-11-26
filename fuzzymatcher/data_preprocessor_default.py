@@ -24,13 +24,19 @@ class DataPreprocessor(DataPreprocessorABC):
         left_cols = self.matcher.left_on
         right_cols = self.matcher.right_on
 
+
+        # Name collisions mean that we want to rename the id columns
         if not self.matcher.left_id_col:
             self.add_id(self.matcher.df_left, "left")
             self.matcher.left_id_col = "__id_left"
+        else:
+            self.matcher.df_left.rename(columns = {self.matcher.left_id_col: "__id_left"})
 
-        if not self.matcher.left_id_col:
-            self.add_id(self.matcher.df_left, "right")
-            self.matcher.left_id_col = "__id_right"
+        if not self.matcher.right_id_col:
+            self.add_id(self.matcher.df_right, "right")
+            self.matcher.right_id_col = "__id_right"
+        else:
+            self.matcher.df_right.rename(columns = {self.matcher.right_id_col: "__id_right"})
 
         self._concat_all_fields(self.matcher.df_left, left_cols)
         self._concat_all_fields(self.matcher.df_right, right_cols)
