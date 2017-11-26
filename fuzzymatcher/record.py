@@ -1,4 +1,5 @@
 import pandas as pd
+import random
 
 class Record:
 
@@ -16,13 +17,14 @@ class Record:
     def in_prob_order_asc(self):
         return sorted(self.tokens, key=lambda x: self.matcher.scorer.get_prob(x))
 
-
     def get_n_tokens_random_order():
         pass
 
-    def get_first_n_tokens_prob_order():
-        pass
-
+    def get_random_tokens(self):
+        num_tokens = len(self.tokens)
+        n = random.randint(1, num_tokens)
+        random_tokens = random.sample(self.tokens, n)
+        return random_tokens
 
 
 class RecordToMatch(Record):

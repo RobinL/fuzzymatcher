@@ -1,6 +1,6 @@
 import sqlite3
 from fuzzymatcher.record import Record
-
+import random
 
 class DataGetter:
 
@@ -10,16 +10,18 @@ class DataGetter:
     in 'df_search_within'
     """
 
-    def __init__(self):
-        pass
+    def __init__(self, return_records_limit=100, search_intensity=100):
+        self.return_records_limit = return_records_limit
+        self.search_intensity = search_intensity
 
     def add_data(self, matcher):
 
-        """Adds the data in 'matcher.df_search_within'.
+        """Adds the data in 'matcher.df_search_within' to a sqlite database
+        and create a connection to the database to be used by the data getter
+        Also registers the match object on the datagetter.
 
         Args:
-            df_search_within: The search space i.e. the whole dataset we search within
-            to find potential matches
+            matcher.  The matcher object
 
         Returns:
             None
@@ -38,6 +40,8 @@ class DataGetter:
 
         self.con = con
 
+        # TODO:  Compute the min, max, average number of tokens in a record to help optimise the search
+
 
     def get_potential_matches_from_record(self, rec_find_match_for):
 
@@ -52,20 +56,39 @@ class DataGetter:
 
         """
 
+        tokens_prob_order = rec_find_match_for.tokens_prob_order
+        # Start searching with all the terms, then drop them one at a time, starting with the most unusual term
+        for i in range(len(tokens_prob_order)):
+            sub_tokens = tokens_prob_order[i:]
+            matches = self._tokens_to_matches(sub_tokens)
+            # When we find a match, stop searching
+            if len(matches) > 0:
+                break
+
+        # If we cannot find a match, search random combinations
+        if len(matches) == 0:
+            for i in range(self.search_intensity):
+                matches = self._tokens_to_matches(rec_find_match_for.get_random_tokens())
+                if len(matches) > 0:
+                    break
+
+        potential_matches = []
+        for m in matches:
+            potential_matches.append(Record(m[0], m[1], self.matcher))
+
+        return potential_matches
+
+    def _tokens_to_matches(self, tokens):
+
         get_records_sql = """
             SELECT * FROM fts_target WHERE fts_target MATCH '{}' limit {};
             """
-
-        get_records_sql = get_records_sql.format("james john", "100")
-
-        get_records_sql = "select * from fts_target"
+        fts_string = " ".join(tokens)
+        sql = get_records_sql.format(fts_string, self.return_records_limit)
         cur = self.con.cursor()
-        cur.execute(get_records_sql)
+        cur.execute(sql)
         results = cur.fetchall()
 
-        potential_matches = []
-        for r in results:
-            potential_matches.append(Record(r[0], r[1], self.matcher))
+        return results
 
-        return potential_matches
 
