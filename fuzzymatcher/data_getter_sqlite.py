@@ -10,9 +10,10 @@ class DataGetter:
     in 'df_search_within'
     """
 
-    def __init__(self, return_records_limit=100, search_intensity=100):
+    def __init__(self, return_records_limit=100, search_intensity=100, cartesian = False):
         self.return_records_limit = return_records_limit
         self.search_intensity = search_intensity
+        self.cartesian = cartesian
 
     def add_data(self, matcher):
 
@@ -56,6 +57,14 @@ class DataGetter:
 
         """
 
+        # If the user's asked for the cartesian product then retrieve all records from df_right
+        if self.cartesian:
+            matches = self._cartesian_matches()
+            potential_matches = []
+            for m in matches:
+                potential_matches.append(Record(m[0], m[1], self.matcher))
+            return potential_matches
+
         tokens_prob_order = rec_find_match_for.tokens_prob_order
         # Start searching with all the terms, then drop them one at a time, starting with the most unusual term
         for i in range(len(tokens_prob_order)):
@@ -91,4 +100,12 @@ class DataGetter:
 
         return results
 
+    def _cartesian_matches(self):
+        sql = """
+            SELECT * FROM fts_target;
+            """
+        cur = self.con.cursor()
+        cur.execute(sql)
+        results = cur.fetchall()
 
+        return results
