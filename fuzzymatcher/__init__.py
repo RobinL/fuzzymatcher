@@ -12,8 +12,6 @@ def link_table(df_left,
             df_right,
             left_on,
             right_on,
-            left_word_cols = None,
-            right_word_cols = None,
             left_id_col = None,
             right_id_col = None):
 
@@ -23,7 +21,7 @@ def link_table(df_left,
 
     m = Matcher(dp, dg, s)
 
-    m.add_data(df_left, df_right, left_on, right_on, left_word_cols, right_word_cols, left_id_col, right_id_col)
+    m.add_data(df_left, df_right, left_on, right_on,  left_id_col, right_id_col)
 
     m.match_all()
 

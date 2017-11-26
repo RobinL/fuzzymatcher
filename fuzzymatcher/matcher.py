@@ -19,8 +19,6 @@ class Matcher:
               df_right,
               left_on,
               right_on,
-              left_word_cols = None,
-              right_word_cols = None,
               left_id_col = None,
               right_id_col = None):
 
@@ -29,8 +27,6 @@ class Matcher:
         self.df_right = df_right.copy()
         self.left_on = left_on
         self.right_on = right_on
-        self.left_word_cols = left_word_cols
-        self.right_word_cols = right_word_cols
         self.left_id_col = left_id_col
         self.right_id_col = right_id_col
 
