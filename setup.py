@@ -12,5 +12,5 @@ setup(name='fuzzymatcher',
       setup_requires=['pandas', 'metaphone'],
       test_requires=["pylint", "coverage", "codecov"],
       keywords=["matching", "fuzzy", "probabalistic", "recordlinking", "fuzzymatching"],
-      download_url = 'https://github.com/RobinL/fuzzymatcher/archive/0.0.1.tar.gz',
+      download_url = 'https://github.com/RobinL/fuzzymatcher/archive/v0.0.1.tar.gz',
       zip_safe=False)

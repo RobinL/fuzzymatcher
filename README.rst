@@ -1,3 +1,6 @@
+.. image:: https://badge.fury.io/py/fuzzymatcher.svg
+    :target: https://badge.fury.io/py/fuzzymatcher
+
 .. image:: https://travis-ci.org/RobinL/fuzzymatcher.svg?branch=dev
     :target: https://travis-ci.org/RobinL/fuzzymatcher
 
