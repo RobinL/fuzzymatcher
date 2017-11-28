@@ -1,1 +1,2 @@
 {"datetime": "2017-11-28T18:24:43.058249", "commit_hash": "c2e71ec", "datagetter_cartesian": 0.97, "datagetter_sqlite": 0.54}
+{"datetime": "2017-11-28T21:55:46.633256", "commit_hash": "4115da7", "datagetter_cartesian": 0.96, "datagetter_sqlite": 0.87}

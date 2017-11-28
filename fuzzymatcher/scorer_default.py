@@ -6,6 +6,7 @@ from operator import mul
 from functools import reduce
 from math import log10
 
+from fuzzymatcher.utils import add_dmetaphones_to_col
 class Scorer:
 
     """
@@ -42,7 +43,9 @@ class Scorer:
 
         series1 = self.matcher.df_left_processed["_concat_all"]
         series2 = self.matcher.df_right_processed["_concat_all"]
+
         all_series = pd.concat([series1, series2])
+        all_series = all_series.apply(add_dmetaphones_to_col)
 
         tokens = list(chain.from_iterable(all_series.apply(str.split)))
         freq_counts = Counter(tokens)

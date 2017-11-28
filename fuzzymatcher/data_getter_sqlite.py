@@ -1,6 +1,10 @@
-import sqlite3
-from fuzzymatcher.record import Record
+import logging
 import random
+import sqlite3
+
+from fuzzymatcher.record import Record
+from fuzzymatcher.utils import tokens_to_dmetaphones, add_dmetaphone_to_concat_all
+log = logging.getLogger(__name__)
 
 class DataGetter:
 
@@ -29,8 +33,13 @@ class DataGetter:
 
         self.matcher = matcher
 
-        con = sqlite3.connect(':memory:')
-        matcher.df_right_processed.to_sql("df_right_processed", con, index=False)
+        # Create dmetaphone column
+
+        con = sqlite3.connect(':memory:', timeout=0.05)
+        df = matcher.df_right_processed.copy()
+        add_dmetaphone_to_concat_all(df)
+
+        df.to_sql("df_right_processed", con, index=False)
         sql = """
                  CREATE VIRTUAL TABLE fts_target
                  USING fts4({} TEXT, _concat_all TEXT);
@@ -56,14 +65,31 @@ class DataGetter:
 
         """
 
-        tokens_prob_order = rec_find_match_for.tokens_prob_order
+        tkn_po = rec_find_match_for.tokens_prob_order
+        tkn_dm = rec_find_match_for.dmetaphones_prob_order
+
         # Start searching with all the terms, then drop them one at a time, starting with the most unusual term
-        for i in range(len(tokens_prob_order)):
-            sub_tokens = tokens_prob_order[i:]
-            matches = self._tokens_to_matches(sub_tokens)
-            # When we find a match, stop searching
-            if len(matches) > 0:
+
+        token_lists = [tkn_po, tkn_po[::-1], tkn_dm, tkn_dm[::-1]]
+
+        matches_counter = 0
+        matches = []
+        for token_list in token_lists:
+            for i in range(len(token_list)):
+                sub_tokens = token_list[i:]
+                # log.debug(" ".join(sub_tokens))
+                matches = self._tokens_to_matches(sub_tokens)
+
+                # When we find a match, stop searching
+                if len(matches) > 0 and len(matches) < self.return_records_limit:
+                    matches.extend(matches)
+                    matches_counter += 1
+                    break
+            if matches_counter == 2:
                 break
+
+        # Dedupe matches
+        matches = set(matches)
 
         # If we cannot find a match, search random combinations
         if len(matches) == 0:
@@ -85,16 +111,6 @@ class DataGetter:
             """
         fts_string = " ".join(tokens)
         sql = get_records_sql.format(fts_string, self.return_records_limit)
-        cur = self.con.cursor()
-        cur.execute(sql)
-        results = cur.fetchall()
-
-        return results
-
-    def _cartesian_matches(self):
-        sql = """
-            SELECT * FROM fts_target;
-            """
         cur = self.con.cursor()
         cur.execute(sql)
         results = cur.fetchall()
