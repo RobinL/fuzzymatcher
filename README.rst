@@ -28,6 +28,6 @@ Usage
 
 See `examples.ipynb <https://github.com/RobinL/fuzzymatcher/blob/master/examples.ipynb>`_ for examples of usage and the output.
 
-You can run these examples interactively `here <https://mybinder.org/v2/gh/RobinL/fuzzymatcher/dev?filepath=examples.ipynb>`_.
+You can run these examples interactively `here <https://mybinder.org/v2/gh/RobinL/fuzzymatcher/master?filepath=examples.ipynb>`_.
 
 
