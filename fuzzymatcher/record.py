@@ -1,3 +1,4 @@
+from fuzzymatcher.utils import tokens_to_dmetaphones
 import pandas as pd
 import random
 import re
@@ -9,7 +10,9 @@ class Record:
         self.record_string = record_string
         self.matcher = matcher
         self.tokens = self.tokenise(record_string)
+
         self.tokens_prob_order = self.in_prob_order_asc()  #QUESTION:  The method could just set this property
+        self.dmetaphones_prob_order = tokens_to_dmetaphones(self.tokens_prob_order)
 
     @staticmethod
     def tokenise(record_string):
@@ -23,8 +26,6 @@ class Record:
     def in_prob_order_asc(self):
         return sorted(self.tokens, key=lambda x: self.matcher.scorer.get_prob(x))
 
-    def get_n_tokens_random_order():
-        pass
 
     def get_random_tokens(self):
         num_tokens = len(self.tokens)
@@ -34,6 +35,7 @@ class Record:
 
     def __repr__(self):
         return "ID: {}, Record String: {}".format(self.record_id, self.record_string)
+
 
 
 class RecordToMatch(Record):

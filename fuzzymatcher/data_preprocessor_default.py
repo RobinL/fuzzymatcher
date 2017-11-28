@@ -44,11 +44,6 @@ class DataPreprocessor(DataPreprocessorABC):
         self._case_and_punctuation(self.matcher.df_left)
         self._case_and_punctuation(self.matcher.df_right)
 
-        # Add dmetaphone to everything that looks like a word
-        if self.include_dmetaphone:
-            self._add_dmetaphone(self.matcher.df_left)
-            self._add_dmetaphone(self.matcher.df_right)
-
         self.matcher.df_left_processed = self.matcher.df_left[[self.matcher.left_id_col, "_concat_all"]]
         self.matcher.df_right_processed = self.matcher.df_right[[self.matcher.right_id_col, "_concat_all"]]
 
@@ -71,21 +66,4 @@ class DataPreprocessor(DataPreprocessorABC):
         data = ["{}_{}".format(i, prefix) for i in data]
         df.insert(0, id_colname, data)
 
-    @staticmethod
-    def _add_dmetaphone(df):
 
-        def add_dmetaphone_to_string(x):
-            tokens = x.split(" ")
-            new_tokens = []
-            for t in tokens:
-                dmp = doublemetaphone(t)
-                if dmp[0] == '':
-                    pass
-                elif dmp[1] == '':
-                    new_tokens.append(dmp[0])
-                else:
-                    new_tokens.extend(dmp)
-            tokens.extend(new_tokens)
-            return " ".join(tokens)
-
-        df["_concat_all"] =  df["_concat_all"].apply(add_dmetaphone_to_string)
