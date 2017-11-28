@@ -26,7 +26,7 @@ Finally it outputs a list of the matches it has found and associated score.
 Usage
 -----
 
-See `examples.ipynb <https://github.com/RobinL/fuzzymatcher/blob/dev/examples.ipynb>`_ for examples of usage and the output.
+See `examples.ipynb <https://github.com/RobinL/fuzzymatcher/blob/master/examples.ipynb>`_ for examples of usage and the output.
 
 You can run these examples interactively `here <https://mybinder.org/v2/gh/RobinL/fuzzymatcher/dev?filepath=examples.ipynb>`_.
 
