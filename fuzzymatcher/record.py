@@ -1,5 +1,6 @@
 import pandas as pd
 import random
+import re
 
 class Record:
 
@@ -12,7 +13,12 @@ class Record:
 
     @staticmethod
     def tokenise(record_string):
-        return record_string.split(" ")
+        record_string = record_string.strip()
+        record_string = re.sub("\s+", " ", record_string)
+        tokens = record_string.split(" ")
+        if "" in tokens:
+            print(record_string)
+        return tokens
 
     def in_prob_order_asc(self):
         return sorted(self.tokens, key=lambda x: self.matcher.scorer.get_prob(x))
@@ -54,7 +60,7 @@ class RecordToMatch(Record):
             row["__score"] = p.match_score
             rows.append(row)
 
-        rows.sort(key=lambda r: r['__score'])
+        rows.sort(key=lambda r: r['__score'], reverse=True)
 
         for i, r in enumerate(rows):
             r["__rank"] = i + 1
