@@ -1,14 +1,20 @@
 # -*- coding: utf-8 -*-
-from fuzzymatcher.record import RecordToMatch
 import pandas as pd
+
+from fuzzymatcher.record import RecordToMatch
+from fuzzymatcher.data_preprocessor_default import DataPreprocessor
+from fuzzymatcher.data_getter_sqlite import DataGetter
+from fuzzymatcher.scorer_default import Scorer
+
+
 
 class Matcher:
     """The Matcher coordinates data matching"""
 
     def __init__(self,
-                 data_preprocessor,
-                 data_getter,
-                 scorer,
+                 data_preprocessor = DataPreprocessor(),
+                 data_getter = DataGetter(),
+                 scorer = Scorer(),
                  top_n_matches = 5):
         self.data_preprocessor = data_preprocessor
         self.data_getter = data_getter
@@ -34,13 +40,12 @@ class Matcher:
 
 
     def match_all(self):
-
         # Get a dataset with id, record only for left and right
         self.data_preprocessor.preprocess()
 
-        # Data preprocessor returns list of dicts, not pd.DataFrame
-        self.data_getter.add_data(self)
+        # Scorer first because some data getters may need to score records on add_data
         self.scorer.add_data(self)
+        self.data_getter.add_data(self)
 
         # Get a table that contains only the matches, scores and ids
         self.link_table = self._match_processed_data()
@@ -144,13 +149,4 @@ class Matcher:
                 return col_name + "_right"
             else:
                 return col_name
-
-
-
-
-
-
-
-
-
 
