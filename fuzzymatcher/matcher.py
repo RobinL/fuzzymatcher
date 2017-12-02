@@ -31,6 +31,13 @@ class Matcher:
         # Copy to prevent modifying the dataframes the user provides
         self.df_left = df_left.copy()
         self.df_right = df_right.copy()
+
+        if type(left_on) == str:
+            left_on = [left_on]
+
+        if type(right_on) == str:
+            right_on = [right_on]
+
         self.left_on = left_on
         self.right_on = right_on
         self.left_id_col = left_id_col
