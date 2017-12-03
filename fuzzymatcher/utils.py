@@ -33,7 +33,7 @@ def convert_series_to_dmetaphones(series):
 def is_mispelling(token_left, token_right):
 
     dml = set(doublemetaphone(token_left))
-    dmr = set(doublemetaphone(token_left))
+    dmr = set(doublemetaphone(token_right))
 
     if len(dml.intersection(dmr).difference({''})) > 0:
         return True
