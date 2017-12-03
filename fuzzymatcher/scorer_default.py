@@ -54,10 +54,12 @@ class Scorer:
 
         combos = product(unique_tokens_left, unique_tokens_right)
 
+
         mispelling_tokens_left = set()
         mispelling_tokens_right = set()
         for c in combos:
             if is_mispelling(c[0], c[1]):
+                log.debug("misspelling {} {}".format(c[0], c[1]))
                 mispelling_tokens_left.add(c[0])
                 mispelling_tokens_right.add(c[1])
 
@@ -66,7 +68,14 @@ class Scorer:
 
         # If there are tokens in record_to_find_match for which aren't in record_potential_match
         # then this should reduce the score, especially if those tokens are uncommon
-
+        log.debug("----")
+        log.debug(record_to_find_match_for)
+        log.debug(record_potential_match)
+        log.debug("Common tokens: {}".format(common_tokens))
+        log.debug("mispelling_tokens_left {}".format(mispelling_tokens_left))
+        log.debug("mispelling_tokens_right {}".format(mispelling_tokens_right))
+        log.debug("unique_tokens_left = {}".format(unique_tokens_left))
+        log.debug("unique_tokens_right = {}".format(unique_tokens_right))
         for t in unique_tokens_left:
             prob_adjustment = self.get_prob_left(t)
             match_prob = self._adjust_prob_towards_one(match_prob, prob_adjustment)
