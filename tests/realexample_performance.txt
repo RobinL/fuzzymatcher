@@ -1,2 +1,3 @@
 {"datetime": "2017-12-02T09:24:57.559923", "commit_hash": "2279321", "perc_correct": 0.9921052631578947, "test_type": "local_authority"}
 
+{"datetime": "2017-12-03T18:12:18.982100", "commit_hash": "aee05f3", "perc_correct": 0.9973684210526316, "test_type": "local_authority"}

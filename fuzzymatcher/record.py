@@ -24,8 +24,7 @@ class Record:
         return tokens
 
     def in_prob_order_asc(self):
-        return sorted(self.tokens, key=lambda x: self.matcher.scorer.get_prob(x))
-
+        return sorted(self.tokens, key=lambda x: self.matcher.scorer.get_prob_left(x))
 
     def get_random_tokens(self):
         num_tokens = len(self.tokens)
@@ -35,8 +34,6 @@ class Record:
 
     def __repr__(self):
         return "ID: {}, Record String: {}".format(self.record_id, self.record_string)
-
-
 
 class RecordToMatch(Record):
 
@@ -69,10 +66,7 @@ class RecordToMatch(Record):
 
         return rows
 
-
-
 class RecordPotentialMatch(Record):
-    # Need to add match score
 
     def __init__(self, *args, **kwargs):
         Record.__init__(self, *args, **kwargs)

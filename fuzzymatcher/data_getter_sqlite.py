@@ -66,10 +66,14 @@ class DataGetter:
         """
 
         tkn_po = rec_find_match_for.tokens_prob_order
+
+        # No point in running FTS using a token we know isn't in df_right
+        tkn_po = self._remove_freq_zero_tokens(tkn_po)
+
         tkn_dm = rec_find_match_for.dmetaphones_prob_order
+        tkn_dm = self._remove_freq_zero_tokens(tkn_po)
 
         # Start searching with all the terms, then drop them one at a time, starting with the most unusual term
-
         token_lists = [tkn_po, tkn_po[::-1], tkn_dm, tkn_dm[::-1]]
 
         matches_counter = 0
@@ -77,7 +81,6 @@ class DataGetter:
         for token_list in token_lists:
             for i in range(len(token_list)):
                 sub_tokens = token_list[i:]
-                # log.debug(" ".join(sub_tokens))
                 matches = self._tokens_to_matches(sub_tokens)
 
                 # When we find a match, stop searching
@@ -116,3 +119,6 @@ class DataGetter:
         results = cur.fetchall()
 
         return results
+
+    def _remove_freq_zero_tokens(self, tokens):
+        return [t for t in tokens if self.matcher.scorer.get_prob_right(t) > 0]

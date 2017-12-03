@@ -6,8 +6,6 @@ from fuzzymatcher.data_preprocessor_default import DataPreprocessor
 from fuzzymatcher.data_getter_sqlite import DataGetter
 from fuzzymatcher.scorer_default import Scorer
 
-
-
 class Matcher:
     """The Matcher coordinates data matching"""
 

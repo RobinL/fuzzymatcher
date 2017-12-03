@@ -1,4 +1,5 @@
 from metaphone import doublemetaphone
+from Levenshtein import ratio
 
 def tokens_to_dmetaphones(tokens):
     new_tokens = []
@@ -13,11 +14,31 @@ def tokens_to_dmetaphones(tokens):
     return new_tokens
 
 def add_dmetaphones_to_col(x):
-            tokens = x.split(" ")
-            new_tokens = tokens_to_dmetaphones(tokens)
-            tokens.extend(new_tokens)
-            return " ".join(tokens)
+    tokens = x.split(" ")
+    new_tokens = tokens_to_dmetaphones(tokens)
+    tokens.extend(new_tokens)
+    return " ".join(tokens)
 
 def add_dmetaphone_to_concat_all(df):
+    df["_concat_all"] =  df["_concat_all"].apply(add_dmetaphones_to_col)
 
-        df["_concat_all"] =  df["_concat_all"].apply(add_dmetaphones_to_col)
+def convert_tokens_to_dmetaphones(x):
+    tokens = x.split(" ")
+    new_tokens = tokens_to_dmetaphones(tokens)
+    return " ".join(new_tokens)
+
+def convert_series_to_dmetaphones(series):
+    return series.apply(convert_tokens_to_dmetaphones)
+
+def is_mispelling(token_left, token_right):
+
+    dml = set(doublemetaphone(token_left))
+    dmr = set(doublemetaphone(token_left))
+
+    if len(dml.intersection(dmr).difference({''})) > 0:
+        return True
+
+    if ratio(token_left, token_right) >= 0.9:
+        return True
+
+    return False
