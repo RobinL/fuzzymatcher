@@ -11,6 +11,8 @@ def tokens_to_dmetaphones(tokens):
             new_tokens.append(dmp[0])
         else:
             new_tokens.extend(dmp)
+
+    new_tokens = [t.strip() for t in new_tokens]
     return new_tokens
 
 def add_dmetaphones_to_col(x):
