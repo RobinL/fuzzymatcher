@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 import pandas as pd
 
-from fuzzymatcher.record import RecordToMatch
+
+from fuzzymatcher.record import RecordPotentialMatch, RecordToMatch
+from fuzzymatcher.tokencomparison import TokenComparison
 from fuzzymatcher.data_preprocessor_default import DataPreprocessor
 from fuzzymatcher.data_getter_sqlite import DataGetter
 from fuzzymatcher.scorer_default import Scorer
@@ -13,7 +15,9 @@ class Matcher:
                  data_preprocessor = DataPreprocessor(),
                  data_getter = DataGetter(),
                  scorer = Scorer(),
+                 token_comparison = TokenComparison(),
                  top_n_matches = 5):
+        self.token_comparison = token_comparison
         self.data_preprocessor = data_preprocessor
         self.data_getter = data_getter
         self.scorer = scorer
@@ -41,7 +45,32 @@ class Matcher:
         self.left_id_col = left_id_col
         self.right_id_col = right_id_col
 
-        self.data_preprocessor.add_data(self)
+        self.data_preprocessor.register_matcher(self)
+
+
+    def initiate_records(self):
+        self.left_records = {}
+        cols = self.left_on.copy()
+        cols.append("__id_left")
+        df = self.df_left[cols]
+        for r in df.iterrows():
+            row = r[1]
+            fields_dict = dict(row[self.left_on])
+            this_id = row["__id_left"]
+            rec = RecordToMatch(fields_dict, this_id, self)
+            self.left_records[this_id] = rec
+
+        self.right_records = {}
+        cols = self.right_on.copy()
+        cols.append("__id_right")
+        df = self.df_right[cols]
+        for r in df.iterrows():
+            row = r[1]
+            fields_dict = dict(row[self.right_on])
+            this_id = row["__id_right"]
+            rec = RecordPotentialMatch(fields_dict, this_id, self)
+            self.right_records[this_id] = rec
+
 
 
     def match_all(self):
