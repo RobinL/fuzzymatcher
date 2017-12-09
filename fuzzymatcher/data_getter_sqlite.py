@@ -33,16 +33,14 @@ class DataGetter:
 
         self.matcher = matcher
 
-        # Create dmetaphone column
 
-        con = sqlite3.connect(':memory:', timeout=0.05)
+        con = sqlite3.connect(':memory:', timeout=0.3)
         df = matcher.df_right_processed.copy()
-        add_dmetaphone_to_concat_all(df)
 
         df.to_sql("df_right_processed", con, index=False)
         sql = """
                  CREATE VIRTUAL TABLE fts_target
-                 USING fts4({} TEXT, _concat_all TEXT);
+                 USING fts4({} TEXT, _concat_all TEXT, _concat_all_alternatives TEXT);
               """.format(matcher.right_id_col)
         con.execute(sql)
         con.execute("INSERT INTO fts_target SELECT * FROM df_right_processed")

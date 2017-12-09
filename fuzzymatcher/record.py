@@ -5,35 +5,55 @@ import re
 
 class Record:
 
-    def __init__(self, record_id, record_string, matcher):
+    def __init__(self, field_dict, record_id, matcher):
+        self.orig_field_dict = field_dict
         self.record_id = record_id
-        self.record_string = record_string
         self.matcher = matcher
-        self.tokens = self.tokenise(record_string)
 
-        self.tokens_prob_order = self.in_prob_order_asc()  #QUESTION:  The method could just set this property
-        self.dmetaphones_prob_order = tokens_to_dmetaphones(self.tokens_prob_order)
+        self.clean_token_dict = Record.get_tokenised_field_dict(field_dict)
+        self.clean_string = Record.get_clean_string(self.clean_token_dict)
 
-    @staticmethod
-    def tokenise(record_string):
-        record_string = record_string.strip()
-        record_string = re.sub("\s+", " ", record_string)
-        tokens = record_string.split(" ")
-        if "" in tokens:
-            print(record_string)
-        return tokens
+        self.token_misspelling_dict = self.get_tokenised_misspelling_dict()
 
-    def in_prob_order_asc(self):
-        return sorted(self.tokens, key=lambda x: self.matcher.scorer.get_prob_left(x))
-
-    def get_random_tokens(self):
-        num_tokens = len(self.tokens)
-        n = random.randint(1, num_tokens)
-        random_tokens = random.sample(self.tokens, n)
-        return random_tokens
 
     def __repr__(self):
-        return "ID: {}, Record String: {}".format(self.record_id, self.record_string)
+        return self.clean_string
+
+    def get_tokenised_misspelling_dict(self):
+        get_misspellings = self.matcher.token_comparison.get_misspellings
+
+        misspellings_dict = {}
+        for field, tokens in self.clean_token_dict.items():
+            misspelling_tokens = []
+            for t in tokens:
+                misspelling_tokens.extend(get_misspellings(t))
+            misspellings_dict[field] = misspelling_tokens
+        return misspellings_dict
+
+    @staticmethod
+    def field_to_string(value):
+        return str(value)
+
+    @staticmethod
+    def get_tokenised_field_dict(field_dict):
+        cleaned_token_dict = {}
+        for key, value in field_dict.items():
+            value = Record.field_to_string(value)
+            value = value.upper()
+
+            value = value.replace("'", " ")
+            value = re.sub('[^\w\s]',' ', value)
+            value = re.sub('\s{2,100}',' ', value)
+
+            cleaned_token_dict[key] = value.split(" ")
+        return cleaned_token_dict
+
+    @staticmethod
+    def get_clean_string(token_dict):
+        tokens = []
+        for key, value in token_dict.items():
+            tokens.extend(value)
+        return " ".join(tokens)
 
 class RecordToMatch(Record):
 
@@ -41,30 +61,6 @@ class RecordToMatch(Record):
         Record.__init__(self, *args, **kwargs)
         self.potential_matches = None
 
-    def get_potential_matches(self):
-        return self.matcher.data_getter.get_potential_matches_from_record(self)
-
-    def find_and_score_potential_matches(self):
-        self.potential_matches = self.get_potential_matches()
-
-        for p in self.potential_matches:
-            self.matcher.scorer.score_match(self, p)
-
-    def get_link_table_rows(self):
-        rows = []
-        for p in self.potential_matches:
-            row = {}
-            row["__id_left"] = self.record_id
-            row["__id_right"] = p.record_id
-            row["__score"] = p.match_score
-            rows.append(row)
-
-        rows.sort(key=lambda r: r['__score'], reverse=True)
-
-        for i, r in enumerate(rows):
-            r["__rank"] = i + 1
-
-        return rows
 
 class RecordPotentialMatch(Record):
 
