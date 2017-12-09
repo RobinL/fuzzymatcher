@@ -10,10 +10,12 @@ class Record:
         self.record_id = record_id
         self.matcher = matcher
 
+        self.fields = list(field_dict.keys())
         self.clean_token_dict = Record.get_tokenised_field_dict(field_dict)
-        self.clean_string = Record.get_clean_string(self.clean_token_dict)
+        self.clean_string = Record.get_concat_string(self.clean_token_dict)
 
         self.token_misspelling_dict = self.get_tokenised_misspelling_dict()
+
 
 
     def __repr__(self):
@@ -44,12 +46,13 @@ class Record:
             value = value.replace("'", " ")
             value = re.sub('[^\w\s]',' ', value)
             value = re.sub('\s{2,100}',' ', value)
+            value = value.strip()
 
             cleaned_token_dict[key] = value.split(" ")
         return cleaned_token_dict
 
     @staticmethod
-    def get_clean_string(token_dict):
+    def get_concat_string(token_dict):
         tokens = []
         for key, value in token_dict.items():
             tokens.extend(value)

@@ -36,52 +36,6 @@ class DataPreprocessor(DataPreprocessorABC):
             self.matcher.df_right.rename(columns={self.matcher.right_id_col: "__id_right"}, inplace=True)
 
 
-
-    @staticmethod
-    def _concat_all_fields(df, cols):
-        # Note no return needed because dfs are mutable and pass by ref
-        df[cols] = df[cols].fillna("NULL")
-        df['_concat_all'] = df[cols].apply(' '.join, axis=1)
-
-    @staticmethod
-    def _alternative_tokens_all_fields(df):
-        df["_concat_all_alternatives"] = df["_concat_all"].apply(DataPreprocessor._concat_all_to_alternatives)
-
-    @staticmethod
-    def _concat_all_to_alternatives(concat_all):
-        tokens = concat_all.split(" ")
-        misspellings = []
-        for t in tokens:
-            token_misspellings = DataPreprocessor._get_misspellings(t)
-            misspellings.extend(token_misspellings)
-        return " ".join(misspellings)
-
-    @staticmethod
-    @lru_cache(maxsize=int(1e5))
-    def _get_misspellings(token):
-        """
-        Must return a list of misspellings
-        If there are no misspellings, just return a list of length 0
-        """
-        misspellings = doublemetaphone(token)
-        misspellings = [t for t in misspellings if t != ""]
-        return misspellings
-
-    @staticmethod
-    @lru_cache(maxsize=int(1e5))
-    def _is_mispelling(token1, token2):
-        mis_t1 = set(DataPreprocessor._get_misspellings(token1))
-        mis_t2 = set(DataPreprocessor._get_misspellings(token2))
-        common = mis_t1.intersection(mis_t2).difference({''})  # Difference in case '' included in tokens
-        return len(common) > 0
-
-    @staticmethod
-    def _case_and_punctuation(df):
-        df['_concat_all'] = df['_concat_all'].str.upper()
-        df['_concat_all'] = df['_concat_all'].str.replace("'","")
-        df['_concat_all'] = df['_concat_all'].str.replace('[^\w\s]',' ')
-        df['_concat_all'] = df['_concat_all'].str.replace('\s{2,100}',' ')
-
     @staticmethod
     def add_id(df, prefix):
         id_colname = "__id_" + prefix
