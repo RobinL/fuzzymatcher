@@ -8,7 +8,10 @@ import datetime
 import json
 import pandas as pd
 import subprocess
+from timeit import default_timer as timer
 import unittest
+
+
 
 from fuzzymatcher import link_table, fuzzy_left_join
 from fuzzymatcher.data_getter_cartesian import DataGetterCartesian
@@ -46,8 +49,11 @@ class DatagetterAccuracy(unittest.TestCase):
 
         m.add_data(df_left, df_right, on, on)
 
+        start = timer()
         m.match_all()
         lt = m.get_formatted_link_table()
+        end = timer()
+        time_taken = end - start
 
         cartesian_perc = link_table_percentage_correct(lt)
 
@@ -60,6 +66,7 @@ class DatagetterAccuracy(unittest.TestCase):
         this_record["datagetter_cartesian"] = cartesian_perc
         this_record["datagetter_sqlite"] = sqlite_perc
         this_record["test_type"] = "left_3"
+        this_record["time_taken"] = time_taken
 
         with open("tests/datagetter_performance.txt", "a") as myfile:
             myfile.writelines(json.dumps(this_record) + "\n")
@@ -68,7 +75,10 @@ class DatagetterAccuracy(unittest.TestCase):
         ons = pd.read_csv("tests/data/las_ons.csv")
         os = pd.read_csv("tests/data/las_os.csv")
 
+        start = timer()
         df_joined = fuzzy_left_join(ons, os, left_on = ["lad16nm"], right_on = ["name"])
+        end = timer()
+        time_taken =  end - start
 
         rename = {"lad16cd": "ons_code", "code": "os_code", "lad16nm": "ons_name", "name": "os_name"}
         df_joined = df_joined.rename(columns=rename)
@@ -83,6 +93,7 @@ class DatagetterAccuracy(unittest.TestCase):
         this_record["commit_hash"] = get_commit_hash()
         this_record["perc_correct"] = perc_correct
         this_record["test_type"] = "local_authority"
+        this_record["time_taken"] = time_taken
 
         with open("tests/realexample_performance.txt", "a") as myfile:
             myfile.writelines(json.dumps(this_record) + "\n")

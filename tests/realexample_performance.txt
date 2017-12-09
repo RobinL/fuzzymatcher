@@ -1,3 +1,5 @@
 {"datetime": "2017-12-02T09:24:57.559923", "commit_hash": "2279321", "perc_correct": 0.9921052631578947, "test_type": "local_authority"}
-
 {"datetime": "2017-12-03T18:12:18.982100", "commit_hash": "aee05f3", "perc_correct": 0.9973684210526316, "test_type": "local_authority"}
+{"datetime": "2017-12-09T09:09:38.156366", "commit_hash": "800d0de", "perc_correct": 0.9973684210526316, "test_type": "local_authority"}
+{"datetime": "2017-12-09T09:10:18.018472", "commit_hash": "800d0de", "perc_correct": 0.9973684210526316, "test_type": "local_authority"}
+{"datetime": "2017-12-09T09:15:08.420186", "commit_hash": "800d0de", "perc_correct": 0.9973684210526316, "test_type": "local_authority", "time_taken": 0.34182741500262637}
