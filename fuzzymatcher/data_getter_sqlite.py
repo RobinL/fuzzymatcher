@@ -1,4 +1,5 @@
 import logging
+import pandas as pd
 import random
 import sqlite3
 
@@ -33,9 +34,18 @@ class DataGetter:
 
         self.matcher = matcher
 
+        # Turn right_records into strings and add to db
+        rows = []
+        for key, record in matcher.right_records.items():
+            row = {}
+            row["id"] = record.record_id
+            row["_concat_all"] = record.clean_string
+            row["_concat_all_alternatives"] = record.get_concat_string(record.token_misspelling_dict)
+            rows.append(row)
+
+        df = pd.DataFrame(rows)
 
         con = sqlite3.connect(':memory:', timeout=0.3)
-        df = matcher.df_right_processed.copy()
 
         df.to_sql("df_right_processed", con, index=False)
         sql = """

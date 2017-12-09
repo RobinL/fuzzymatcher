@@ -79,10 +79,10 @@ class Matcher:
 
         # Scorer first because some data getters may need to score records on add_data
         self.scorer.add_data(self)
-        self.data_getter.add_data(self)
+        # self.data_getter.add_data(self)
 
         # Get a table that contains only the matches, scores and ids
-        self.link_table = self._match_processed_data()
+        # self.link_table = self._match_processed_data()
 
     def get_formatted_link_table(self):
         return self._add_original_cols_to_link_table(self.link_table)
