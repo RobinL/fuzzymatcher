@@ -18,8 +18,8 @@ class TokenComparison:
 
     @lru_cache(maxsize=int(1e5))
     def is_mispelling(self, token1, token2):
-        mis_t1 = set(DataPreprocessor._get_misspellings(token1))
-        mis_t2 = set(DataPreprocessor._get_misspellings(token2))
+        mis_t1 = set(self.get_misspellings(token1))
+        mis_t2 = set(self.get_misspellings(token2))
         common = mis_t1.intersection(mis_t2).difference({''})  # Difference in case '' included in tokens
         return len(common) > 0
 
