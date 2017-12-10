@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
+import logging
 import pandas as pd
-
 
 from fuzzymatcher.record import RecordToMatch, Record
 from fuzzymatcher.tokencomparison import TokenComparison
 from fuzzymatcher.data_preprocessor_default import DataPreprocessor
 from fuzzymatcher.data_getter_sqlite import DataGetter
 from fuzzymatcher.scorer_default import Scorer
+
+log = logging.getLogger(__name__)
 
 class Matcher:
     """The Matcher coordinates data matching"""
@@ -117,8 +119,16 @@ class Matcher:
 
         link_table_list = []
 
+        num_left_records = len(self.left_records.keys())
+        num_right_records = len(self.right_records.keys())
+        log.debug("Matching {} left records against {} right records".format(num_left_records, num_right_records))
+
+        counter = 0
         for key, this_record in self.left_records.items():
 
+            if counter % 250 == 0:
+                log.debug("Processed {} records".format(counter))
+            counter +=1
             this_record.find_and_score_potential_matches()
             link_table_list.extend(this_record.get_link_table_rows())
 
