@@ -2,7 +2,7 @@
 import pandas as pd
 
 
-from fuzzymatcher.record import RecordPotentialMatch, RecordToMatch
+from fuzzymatcher.record import RecordToMatch, Record
 from fuzzymatcher.tokencomparison import TokenComparison
 from fuzzymatcher.data_preprocessor_default import DataPreprocessor
 from fuzzymatcher.data_getter_sqlite import DataGetter
@@ -45,6 +45,8 @@ class Matcher:
         self.left_id_col = left_id_col
         self.right_id_col = right_id_col
 
+        self.left_to_right_lookup = {l:r for (l,r) in zip(left_on, right_on)}
+
         self.data_preprocessor.register_matcher(self)
 
 
@@ -68,21 +70,26 @@ class Matcher:
             row = r[1]
             fields_dict = dict(row[self.right_on])
             this_id = row["__id_right"]
-            rec = RecordPotentialMatch(fields_dict, this_id, self)
+            rec = Record(fields_dict, this_id, self)
             self.right_records[this_id] = rec
 
 
 
     def match_all(self):
+
+
         # Get a dataset with id, record only for left and right
         self.data_preprocessor.preprocess()
 
+        self.initiate_records()
+
         # Scorer first because some data getters may need to score records on add_data
         self.scorer.add_data(self)
-        # self.data_getter.add_data(self)
+
+        self.data_getter.add_data(self)
 
         # Get a table that contains only the matches, scores and ids
-        # self.link_table = self._match_processed_data()
+        self.link_table = self._match_processed_data()
 
     def get_formatted_link_table(self):
         return self._add_original_cols_to_link_table(self.link_table)
@@ -112,24 +119,19 @@ class Matcher:
 
         link_table_list = []
 
-        for r in self.df_left_processed.iterrows():
-            row = r[1]
-            record_id = row[self.left_id_col]
 
-            record_to_match = RecordToMatch(record_id, row["_concat_all"], self)
+        for key, this_record in self.left_records.items():
 
-            record_to_match.find_and_score_potential_matches()
-            link_table_list.extend(record_to_match.get_link_table_rows())
+            this_record.find_and_score_potential_matches()
+            link_table_list.extend(this_record.get_link_table_rows())
 
         return pd.DataFrame(link_table_list)
 
     def _add_original_cols_to_link_table(self, link_table):
 
         df = link_table.merge(self.df_left, left_on = "__id_left", right_on = self.left_id_col, how = "left", suffixes=('_link', '_left'))
-        df.drop("_concat_all", axis=1, inplace=True)
 
         df = df.merge(self.df_right, left_on = "__id_right", right_on = self.right_id_col, how="left", suffixes=('_left', "_right"))
-        df.drop("_concat_all", axis=1, inplace=True)
 
         match_cols_left = self.left_on[::-1].copy()
         match_cols_right = self.right_on[::-1].copy()

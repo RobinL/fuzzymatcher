@@ -2,6 +2,7 @@ import logging
 import pandas as pd
 import random
 import sqlite3
+import copy
 
 from fuzzymatcher.record import Record
 from fuzzymatcher.utils import tokens_to_dmetaphones, add_dmetaphone_to_concat_all
@@ -44,6 +45,7 @@ class DataGetter:
             rows.append(row)
 
         df = pd.DataFrame(rows)
+        df = df[["id", "_concat_all", "_concat_all_alternatives"]]
 
         con = sqlite3.connect(':memory:', timeout=0.3)
 
@@ -60,7 +62,7 @@ class DataGetter:
         # TODO:  Compute the min, max, average number of tokens in a record to help optimise the search
 
 
-    def get_potential_matches_from_record(self, rec_find_match_for):
+    def get_potential_match_ids_from_record(self, rec_find_match_for):
 
         """Retrieves lists of potential matches to a record
 
@@ -73,30 +75,33 @@ class DataGetter:
 
         """
 
-        tkn_po = rec_find_match_for.tokens_prob_order
+        tkn_po = self._tokens_in_df_right_prob_order(rec_find_match_for, False)
 
         # No point in running FTS using a token we know isn't in df_right
-        tkn_po = self._remove_freq_zero_tokens(tkn_po)
+        tkn_po = [t["token"] for t in tkn_po if t["prob"]>0]
 
-        tkn_dm = rec_find_match_for.dmetaphones_prob_order
-        tkn_dm = self._remove_freq_zero_tokens(tkn_po)
+        tkn_ms_po = self._tokens_in_df_right_prob_order(rec_find_match_for, True)
+        tkn_ms_po = [t["token"] for t in tkn_ms_po if t["prob"]>0]
 
         # Start searching with all the terms, then drop them one at a time, starting with the most unusual term
-        token_lists = [tkn_po, tkn_po[::-1], tkn_dm, tkn_dm[::-1]]
+        # TODO: better to scan in blocks e.g. if tokens a b c d go [abcd] [abc] [bcd] [ab] [bc] [cd] [a] [b] [c] [d]
+        # TODO: It would make sense to score matches immediately.  Then if best score is high, don't serach further
+        # but is best score is low, we can search more intensely
+
+        token_lists = [tkn_po, tkn_po[::-1], tkn_ms_po, tkn_ms_po[::-1]]
 
         matches_counter = 0
         matches = []
         for token_list in token_lists:
             for i in range(len(token_list)):
                 sub_tokens = token_list[i:]
-                matches = self._tokens_to_matches(sub_tokens)
-
+                new_matches = self._tokens_to_matches(sub_tokens)
                 # When we find a match, stop searching
-                if len(matches) > 0 and len(matches) < self.return_records_limit:
-                    matches.extend(matches)
+                if len(new_matches) > 0 and len(new_matches) < self.return_records_limit:
+                    matches.extend(new_matches)
                     matches_counter += 1
                     break
-            if matches_counter == 2:
+            if matches_counter > 2:
                 break
 
         # Dedupe matches
@@ -109,19 +114,25 @@ class DataGetter:
                 if len(matches) > 0:
                     break
 
-        potential_matches = []
+        potential_match_ids = []
         for m in matches:
-            potential_matches.append(Record(m[0], m[1], self.matcher))
+            right_id = m[0]
+            potential_match_ids.append(right_id)
+        return potential_match_ids
 
-        return potential_matches
-
-    def _tokens_to_matches(self, tokens):
+    def _tokens_to_matches(self, tokens, misspelling = False):
 
         get_records_sql = """
-            SELECT * FROM fts_target WHERE fts_target MATCH '{}' limit {};
+            SELECT * FROM fts_target WHERE {} MATCH '{}' limit {};
             """
         fts_string = " ".join(tokens)
-        sql = get_records_sql.format(fts_string, self.return_records_limit)
+
+        if misspelling:
+            table_name = "_concat_all_alternatives"
+        else:
+            table_name = "_concat_all"
+
+        sql = get_records_sql.format(table_name, fts_string, self.return_records_limit)
         cur = self.con.cursor()
         cur.execute(sql)
         results = cur.fetchall()
@@ -130,3 +141,23 @@ class DataGetter:
 
     def _remove_freq_zero_tokens(self, tokens):
         return [t for t in tokens if self.matcher.scorer.get_prob_right(t) > 0]
+
+    def _tokens_in_df_right_prob_order(self, rec_to_find_match_for, misspelling = False):
+        # Problem here is that field names are different in left and right
+        fields = rec_to_find_match_for.fields
+        if misspelling:
+            token_dict = rec_to_find_match_for.token_misspelling_dict
+        else:
+            token_dict = rec_to_find_match_for.clean_token_dict
+        get_prob = self.matcher.scorer.get_prob
+
+        tokens_list = []
+        for field, tokens in token_dict.items():
+            for t in tokens:
+                translated_field = self.matcher.left_to_right_lookup[field]
+                prob = get_prob(t,translated_field,"right",misspelling)
+                tokens_list.append({"token": t, "prob": prob})
+
+        tokens_list.sort(key=lambda x: x["prob"])
+
+        return tokens_list

@@ -16,8 +16,6 @@ class Record:
 
         self.token_misspelling_dict = self.get_tokenised_misspelling_dict()
 
-
-
     def __repr__(self):
         return self.clean_string
 
@@ -64,9 +62,34 @@ class RecordToMatch(Record):
         Record.__init__(self, *args, **kwargs)
         self.potential_matches = None
 
+    def get_potential_match_ids(self):
+        return self.matcher.data_getter.get_potential_match_ids_from_record(self)
 
-class RecordPotentialMatch(Record):
+    def find_and_score_potential_matches(self):
+        # Each left_record has a list of left_record ids
+        potential_match_ids = self.get_potential_match_ids()
 
-    def __init__(self, *args, **kwargs):
-        Record.__init__(self, *args, **kwargs)
-        self.match_score = None
+        self.potential_matches = []
+        for right_id in potential_match_ids:
+            pm = self.matcher.scorer.score_match(self.record_id, right_id)
+            self.potential_matches.append(pm)
+
+    def get_link_table_rows(self):
+        rows = []
+        for p in self.potential_matches:
+            row = {}
+            row["__id_left"] = self.record_id
+            row["__id_right"] = p["record_right"].record_id
+            row["__score"] = p["match_score"]
+            # TODO
+            #row["__score"] = p.match_prob
+            rows.append(row)
+
+        rows.sort(key=lambda r: r['__score'], reverse=True)
+
+        for i, r in enumerate(rows):
+            r["__rank"] = i + 1
+
+        return rows
+
+
