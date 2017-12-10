@@ -108,9 +108,10 @@ class DataGetter:
         matches = set(matches)
 
         # If we cannot find a match, search random combinations
-        if len(matches) == 0:
+        if len(matches) == 0 and len(tkn_po) > 1:
             for i in range(self.search_intensity):
-                matches = self._tokens_to_matches(rec_find_match_for.get_random_tokens())
+                random_tokens = self._get_random_tokens(tkn_po)
+                matches = self._tokens_to_matches(random_tokens)
                 if len(matches) > 0:
                     break
 
@@ -119,6 +120,13 @@ class DataGetter:
             right_id = m[0]
             potential_match_ids.append(right_id)
         return potential_match_ids
+
+    @staticmethod
+    def _get_random_tokens(tokens):
+        num_tokens = len(tokens)
+        n = random.randint(1, num_tokens)
+        random_tokens = random.sample(tokens, n)
+        return random_tokens
 
     def _tokens_to_matches(self, tokens, misspelling = False):
 

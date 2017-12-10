@@ -12,7 +12,8 @@ class DataPreprocessor(DataPreprocessorABC):
     """
 
     def __init__(self, dmetaphone = True):
-        self.include_dmetaphone = dmetaphone
+        #self.include_dmetaphone = dmetaphone TODO
+        pass
 
     def register_matcher(self, matcher):
         self.matcher = matcher
@@ -27,13 +28,13 @@ class DataPreprocessor(DataPreprocessorABC):
             self.add_id(self.matcher.df_left, "left")
             self.matcher.left_id_col = "__id_left"
         else:
-            self.matcher.df_left.rename(columns={self.matcher.left_id_col: "__id_left"}, inplace=True)
+            self.matcher.df_left["__id_left"] = self.matcher.df_left[self.matcher.left_id_col]
 
         if not self.matcher.right_id_col:
             self.add_id(self.matcher.df_right, "right")
             self.matcher.right_id_col = "__id_right"
         else:
-            self.matcher.df_right.rename(columns={self.matcher.right_id_col: "__id_right"}, inplace=True)
+            self.matcher.df_right["__id_right"] = self.matcher.df_right[self.matcher.right_id_col]
 
 
     @staticmethod

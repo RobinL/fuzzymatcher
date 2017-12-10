@@ -76,6 +76,9 @@ class RecordToMatch(Record):
 
     def get_link_table_rows(self):
         rows = []
+
+
+
         for p in self.potential_matches:
             row = {}
             row["__id_left"] = self.record_id
@@ -84,6 +87,15 @@ class RecordToMatch(Record):
             # TODO
             #row["__score"] = p.match_prob
             rows.append(row)
+
+        if len(self.potential_matches) == 0:
+            row = {}
+            row["__id_left"] = self.record_id
+            row["__id_right"] = None
+            row["__score"] = None
+            rows.append(row)
+
+
 
         rows.sort(key=lambda r: r['__score'], reverse=True)
 

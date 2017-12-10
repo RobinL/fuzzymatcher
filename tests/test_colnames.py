@@ -52,8 +52,8 @@ class ColNameCollisions(unittest.TestCase):
 
         df = link_table(left, right, left_on, right_on, left_id_col="id", right_id_col="id")
 
-        expected_columns = ['id_left',
-                    'id_right',
+        expected_columns = ['__id_left',
+                    '__id_right',
                     'match_score',
                     'match_rank',
                     'fname_left',
