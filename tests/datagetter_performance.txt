@@ -4,3 +4,5 @@
 {"datetime": "2017-12-03T18:12:18.623974", "commit_hash": "aee05f3", "datagetter_cartesian": 0.87, "datagetter_sqlite": 0.93, "test_type": "left_3"}
 {"datetime": "2017-12-09T09:10:17.671481", "commit_hash": "800d0de", "datagetter_cartesian": 0.98, "datagetter_sqlite": 0.94, "test_type": "left_3"}
 {"datetime": "2017-12-09T09:15:08.065057", "commit_hash": "800d0de", "datagetter_cartesian": 0.98, "datagetter_sqlite": 0.94, "test_type": "left_3", "time_taken": 19.634991832004744}
+{"datetime": "2017-12-10T14:50:23.598907", "commit_hash": "42cd45e", "datagetter_cartesian": 0.92, "datagetter_sqlite": 0.89, "test_type": "left_3", "time_taken": 0.5589753400126938}
+{"datetime": "2017-12-10T14:52:42.900029", "commit_hash": "42cd45e", "datagetter_cartesian": 0.92, "datagetter_sqlite": 0.89, "test_type": "left_3", "time_taken": 0.5655303659732454}

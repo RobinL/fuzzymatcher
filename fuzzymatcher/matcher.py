@@ -49,7 +49,6 @@ class Matcher:
 
         self.data_preprocessor.register_matcher(self)
 
-
     def initiate_records(self):
         self.left_records = {}
         cols = self.left_on.copy()
@@ -95,11 +94,8 @@ class Matcher:
         return self._add_original_cols_to_link_table(self.link_table)
 
     def get_left_join_table(self):
-        df = self.df_left.merge(self.link_table, left_on = self.left_id_col, right_on = "__id_left", how="left")
-        df.drop("_concat_all", axis=1, inplace=True)
-
-        df = df.merge(self.df_right, left_on = "__id_right", right_on=self.right_id_col, how="left", suffixes = ("_left", "_right"))
-        df.drop(["_concat_all", "__id_left", "__id_right"], axis=1, inplace=True)
+        df = self.df_left.merge(self.link_table, left_on = "__id_left", right_on = "__id_left", how="left")
+        df = df.merge(self.df_right, left_on = "__id_right", right_on="__id_right", how="left", suffixes = ("_left", "_right"))
 
         # Keep records where rank = 1 or there's no rang
         filter1 = df["__rank"] == 1
@@ -107,8 +103,10 @@ class Matcher:
         df = df[filter1 | filter2]
         df.drop("__rank", axis=1, inplace=True)
 
-        cols = ["__score"]
-        cols.extend([c for c in df.columns if c != "__score"])
+        set_cols = ["__score", "__id_left", "__id_right"]
+
+        cols = set_cols.copy()
+        cols.extend([c for c in df.columns if c not in set_cols])
 
         df = df[cols].rename(columns={"__score": "best_match_score"})
         return df
@@ -119,7 +117,6 @@ class Matcher:
 
         link_table_list = []
 
-
         for key, this_record in self.left_records.items():
 
             this_record.find_and_score_potential_matches()
@@ -129,9 +126,9 @@ class Matcher:
 
     def _add_original_cols_to_link_table(self, link_table):
 
-        df = link_table.merge(self.df_left, left_on = "__id_left", right_on = self.left_id_col, how = "left", suffixes=('_link', '_left'))
+        df = link_table.merge(self.df_left, left_on = "__id_left", right_on = "__id_left", how = "left", suffixes=('_link', '_left'))
 
-        df = df.merge(self.df_right, left_on = "__id_right", right_on = self.right_id_col, how="left", suffixes=('_left', "_right"))
+        df = df.merge(self.df_right, left_on = "__id_right", right_on = "__id_right", how="left", suffixes=('_left', "_right"))
 
         match_cols_left = self.left_on[::-1].copy()
         match_cols_right = self.right_on[::-1].copy()
@@ -153,13 +150,7 @@ class Matcher:
         df = df[col_order]
 
         # Finally rename the id columns back to their original and improve names of score and rank
-        if self.left_id_col != self.right_id_col:
-            rename_dict = {"__id_left": self.left_id_col,
-                           "__id_right": self.right_id_col}
-        else:
-            rename_dict = {"__id_left": self.left_id_col + "_left",
-                           "__id_right": self.right_id_col + "_right"}
-
+        rename_dict = {}
         if "match_rank" not in df.columns:
             rename_dict["__rank"] = "match_rank"
 

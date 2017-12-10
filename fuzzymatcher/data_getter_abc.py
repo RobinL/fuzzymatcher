@@ -27,7 +27,7 @@ class DataGetterABC:
 
 
     @abc.abstractmethod
-    def get_potential_matches_from_record(self, rec_find_match_for):
+    def get_potential_match_ids_from_record(self, rec_find_match_for):
 
         """Retrieves lists of potential matches to a record
 

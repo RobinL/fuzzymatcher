@@ -25,12 +25,9 @@ class DataGetterCartesian(DataGetterABC):
             None
         """
 
-        self.potential_matches = []
-        for r in matcher.df_right_processed.iterrows():
-            row = r[1]
-            self.potential_matches.append(Record(row[0], row[1], matcher))
+        self.matcher = matcher
 
-    def get_potential_matches_from_record(self, rec_find_match_for):
+    def get_potential_match_ids_from_record(self, rec_find_match_for):
 
         """Retrieves lists of potential matches to a record
 
@@ -43,4 +40,7 @@ class DataGetterCartesian(DataGetterABC):
 
         """
 
-        return self.potential_matches
+
+        ids = [v.record_id for k,v in self.matcher.right_records.items()]
+
+        return ids
