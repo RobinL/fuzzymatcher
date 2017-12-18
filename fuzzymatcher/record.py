@@ -60,24 +60,14 @@ class RecordToMatch(Record):
 
     def __init__(self, *args, **kwargs):
         Record.__init__(self, *args, **kwargs)
-        self.potential_matches = None
-
-    def get_potential_match_ids(self):
-        return self.matcher.data_getter.get_potential_match_ids_from_record(self)
+        self.potential_matches = []
 
     def find_and_score_potential_matches(self):
         # Each left_record has a list of left_record ids
-        potential_match_ids = self.get_potential_match_ids()
-
-        self.potential_matches = []
-        for right_id in potential_match_ids:
-            pm = self.matcher.scorer.score_match(self.record_id, right_id)
-            self.potential_matches.append(pm)
+        self.matcher.data_getter.get_potential_match_ids_from_record(self)
 
     def get_link_table_rows(self):
         rows = []
-
-
 
         for p in self.potential_matches:
             row = {}

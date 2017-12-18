@@ -115,7 +115,7 @@ class Matcher:
 
     def _match_processed_data(self):
 
-        # This will store all the regords for the link table
+        # This will store all the records for the link table
 
         link_table_list = []
 
