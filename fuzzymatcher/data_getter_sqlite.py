@@ -62,25 +62,25 @@ class DataGetter:
         # TODO:  Compute the min, max, average number of tokens in a record to help optimise the search
 
 
-    def get_potential_match_ids_from_record(self, rec_find_match_for):
+    def get_potential_match_ids_from_record(self, rec_left):
 
         """Retrieves lists of potential matches to a record
 
         Args:
-            rec_find_match_for: The record for which we're trying to find a match
+            rec_left: The record for which we're trying to find a match
 
         Returns:
             A list of rec_potential_match records which represent the potential matches
-            to the rec_find_match_for
+            to the rec_left
 
         """
 
-        tkn_po = self._tokens_in_df_right_prob_order(rec_find_match_for, False)
+        tkn_po = self._tokens_in_df_right_prob_order(rec_left)
 
         # No point in running FTS using a token we know isn't in df_right
         tkn_po = [t["token"] for t in tkn_po if t["prob"]>0]
 
-        tkn_ms_po = self._tokens_in_df_right_prob_order(rec_find_match_for, True)
+        tkn_ms_po = self._tokens_in_df_right_prob_order(rec_left, misspelling=True)
         tkn_ms_po = [t["token"] for t in tkn_ms_po if t["prob"]>0]
 
         # Start searching with all the terms, then drop them one at a time, starting with the most unusual term
@@ -90,18 +90,19 @@ class DataGetter:
 
         token_lists = [tkn_po, tkn_po[::-1], tkn_ms_po, tkn_ms_po[::-1]]
 
-        matches_counter = 0
-        matches = []
         for token_list in token_lists:
             for i in range(len(token_list)):
                 sub_tokens = token_list[i:]
                 new_matches = self._tokens_to_matches(sub_tokens)
                 # When we find a match, stop searching
                 if len(new_matches) > 0 and len(new_matches) < self.return_records_limit:
-                    matches.extend(new_matches)
-                    matches_counter += 1
+                    for match in new_matches:
+                        right_id = match[0]
+                        scored_potential_match = self.matcher.scorer.score_match(rec_left.record_id, right_id)
+
+                        rec_left.potential_matches.extend(scored_potential_match)
                     break
-            if matches_counter > 2:
+            if len(rec_left.potential_matches) > 2:
                 break
 
         # Dedupe matches

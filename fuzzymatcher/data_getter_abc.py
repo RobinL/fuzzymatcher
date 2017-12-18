@@ -1,14 +1,12 @@
 import abc
 
-
 class DataGetterABC:
 
     __metaclass__ = abc.ABCMeta
 
     """
-    A DataGetter handles the retrieval of data from 'df_search_within'
-    It retrieves lists of potential matches to a record in 'df_find_match_for'
-    in 'df_search_within'
+    A DataGetter handles the retrieval of data from df_right (the dataframe in which to search for matches)
+    It retrieves a list of potential match ids
     """
 
     @abc.abstractmethod

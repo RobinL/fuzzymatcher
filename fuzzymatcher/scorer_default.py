@@ -62,7 +62,6 @@ class Scorer:
         return {"match_prob" : prob, "match_score": match_score, "record_right": record_right}
 
 
-
     def _field_to_prob(self, field_left, record_left, record_right):
 
         field_right = self.matcher.left_to_right_lookup[field_left]
