@@ -124,13 +124,18 @@ class Matcher:
         log.debug("Matching {} left records against {} right records".format(num_left_records, num_right_records))
 
         counter = 0
+        total = len(self.left_records.items())
         for key, this_record in self.left_records.items():
 
-            if counter % 250 == 0:
-                log.debug("Processed {} records".format(counter))
-            counter +=1
+            if (counter) % 250 == 0 and counter != 0:
+                log.debug("Processed {} records, {:.0f}% done".format(counter, (counter/total)*100))
+
             this_record.find_and_score_potential_matches()
             link_table_list.extend(this_record.get_link_table_rows())
+
+            counter += 1
+
+        log.debug("Processed {} records, {:.0f}% done".format(counter, (counter/total)*100))
 
         return pd.DataFrame(link_table_list)
 
