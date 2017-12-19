@@ -60,7 +60,7 @@ class RecordToMatch(Record):
 
     def __init__(self, *args, **kwargs):
         Record.__init__(self, *args, **kwargs)
-        self.potential_matches = []
+        self.potential_matches = {} # A dictionary with right_id as key
 
     def find_and_score_potential_matches(self):
         # Each left_record has a list of left_record ids
@@ -69,16 +69,16 @@ class RecordToMatch(Record):
     def get_link_table_rows(self):
         rows = []
 
-        for p in self.potential_matches:
+        for k, v in self.potential_matches.items():
             row = {}
             row["__id_left"] = self.record_id
-            row["__id_right"] = p["record_right"].record_id
-            row["__score"] = p["match_score"]
+            row["__id_right"] = v["record_right"].record_id
+            row["__score"] = v["match_score"]
             # TODO
             #row["__score"] = p.match_prob
             rows.append(row)
 
-        if len(self.potential_matches) == 0:
+        if len(self.potential_matches.items()) == 0: #If there is no potential match, still want a row in link table
             row = {}
             row["__id_left"] = self.record_id
             row["__id_right"] = None

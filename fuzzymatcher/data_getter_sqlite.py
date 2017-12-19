@@ -90,37 +90,26 @@ class DataGetter:
 
         token_lists = [tkn_po, tkn_po[::-1], tkn_ms_po, tkn_ms_po[::-1]]
 
+        new_matches = []
         for token_list in token_lists:
             for i in range(len(token_list)):
                 sub_tokens = token_list[i:]
                 new_matches = self._tokens_to_matches(sub_tokens)
                 # When we find a match, stop searching
                 if len(new_matches) > 0 and len(new_matches) < self.return_records_limit:
-                    for match in new_matches:
-                        right_id = match[0]
-                        scored_potential_match = self.matcher.scorer.score_match(rec_left.record_id, right_id)
-
-                        rec_left.potential_matches.extend(scored_potential_match)
+                    self._add_matches_to_potential_matches(new_matches, rec_left)
                     break
             if len(rec_left.potential_matches) > 2:
                 break
 
-        # Dedupe matches
-        matches = set(matches)
-
         # If we cannot find a match, search random combinations
-        if len(matches) == 0 and len(tkn_po) > 1:
+        if len(new_matches) == 0 and len(tkn_po) > 1:
             for i in range(self.search_intensity):
                 random_tokens = self._get_random_tokens(tkn_po)
                 matches = self._tokens_to_matches(random_tokens)
                 if len(matches) > 0:
                     break
-
-        potential_match_ids = []
-        for m in matches:
-            right_id = m[0]
-            potential_match_ids.append(right_id)
-        return potential_match_ids
+            self._add_matches_to_potential_matches(matches, rec_left)
 
     @staticmethod
     def _get_random_tokens(tokens):
@@ -129,13 +118,19 @@ class DataGetter:
         random_tokens = random.sample(tokens, n)
         return random_tokens
 
+    def _add_matches_to_potential_matches(self, matches, rec_left):
+        for match in matches:
+            right_id = match[0]
+            if right_id not in rec_left.potential_matches:
+                scored_potential_match = self.matcher.scorer.score_match(rec_left.record_id, right_id)
+                rec_left.potential_matches[right_id] = scored_potential_match
+
+
     def _tokens_to_matches(self, tokens, misspelling = False):
 
         get_records_sql = """
             SELECT * FROM fts_target WHERE {} MATCH '{}' limit {};
             """
-
-
 
         # This fails if the special tokens 'and' or 'or' are in fts string!  See issue 35!
         tokens_to_remove = ["AND", "OR"]
