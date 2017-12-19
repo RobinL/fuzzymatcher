@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import logging
 import pandas as pd
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 from fuzzymatcher.record import RecordToMatch, Record
 from fuzzymatcher.tokencomparison import TokenComparison
@@ -122,20 +124,25 @@ class Matcher:
         num_left_records = len(self.left_records.keys())
         num_right_records = len(self.right_records.keys())
         log.debug("Matching {} left records against {} right records".format(num_left_records, num_right_records))
+        start_time  = datetime.now()
 
         counter = 0
         total = len(self.left_records.items())
+        str_template = "Processed {:,.0f} records, {:.0f}% done in {} minutes and {} seconds"
+
         for key, this_record in self.left_records.items():
 
-            if (counter) % 250 == 0 and counter != 0:
-                log.debug("Processed {} records, {:.0f}% done".format(counter, (counter/total)*100))
+            if (counter) % 1000 == 0 and counter != 0:
+                diff = relativedelta(datetime.now(), start_time)
+                log.debug(str_template.format(counter, (counter/total)*100, diff.minutes, diff.seconds))
 
             this_record.find_and_score_potential_matches()
             link_table_list.extend(this_record.get_link_table_rows())
 
             counter += 1
 
-        log.debug("Processed {} records, {:.0f}% done".format(counter, (counter/total)*100))
+        diff = relativedelta(datetime.now(), start_time)
+        log.debug(str_template.format(counter, (counter/total)*100, diff.minutes, diff.seconds))
 
         return pd.DataFrame(link_table_list)
 
