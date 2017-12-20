@@ -27,7 +27,7 @@ class DataGetterCartesian(DataGetterABC):
 
         self.matcher = matcher
 
-    def get_potential_match_ids_from_record(self, rec_find_match_for):
+    def get_potential_match_ids_from_record(self, rec_left):
 
         """Retrieves lists of potential matches to a record
 
@@ -40,7 +40,7 @@ class DataGetterCartesian(DataGetterABC):
 
         """
 
+        for record_right_id ,record_right in self.matcher.right_records.items():
+            scored_potential_match = self.matcher.scorer.score_match(rec_left.record_id, record_right_id)
+            rec_left.potential_matches[record_right_id] = scored_potential_match
 
-        ids = [v.record_id for k,v in self.matcher.right_records.items()]
-
-        return ids

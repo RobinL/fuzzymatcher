@@ -61,6 +61,7 @@ class RecordToMatch(Record):
     def __init__(self, *args, **kwargs):
         Record.__init__(self, *args, **kwargs)
         self.potential_matches = {} # A dictionary with right_id as key
+        self.best_match_score = -float("inf")
 
     def find_and_score_potential_matches(self):
         # Each left_record has a list of left_record ids

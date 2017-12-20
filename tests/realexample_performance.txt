@@ -8,3 +8,6 @@
 {"datetime": "2017-12-10T17:08:37.070141", "commit_hash": "1d74eee", "perc_correct": 0.9973684210526316, "test_type": "local_authority", "time_taken": 0.5759790809825063}
 {"datetime": "2017-12-10T17:08:49.262955", "commit_hash": "1d74eee", "perc_correct": 0.9973684210526316, "test_type": "local_authority", "time_taken": 0.5662913529959042}
 {"datetime": "2017-12-10T17:08:56.214418", "commit_hash": "1d74eee", "perc_correct": 0.9973684210526316, "test_type": "local_authority", "time_taken": 0.5566127240017522}
+{"datetime": "2017-12-20T08:49:47.164089", "commit_hash": "9d13df6", "perc_correct": 0.9973684210526316, "test_type": "local_authority", "time_taken": 0.5756925900350325}
+{"datetime": "2017-12-20T08:54:43.118046", "commit_hash": "9d13df6", "perc_correct": 0.9973684210526316, "test_type": "local_authority", "time_taken": 1.0100204049958847}
+{"datetime": "2017-12-20T08:58:37.191906", "commit_hash": "9d13df6", "perc_correct": 0.9973684210526316, "test_type": "local_authority", "time_taken": 0.9297601060243323}

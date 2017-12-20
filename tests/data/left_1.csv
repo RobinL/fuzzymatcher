@@ -2,4 +2,5 @@ id,fname,mname,lname,dob,another_field
 1,Will,James,Johnston,20/05/1980,other data
 2,James,Paul,Smith,15/06/1990,more data
 3,Jody,Liz,Brown,20/05/1960,another thing
-4,David,James,Williams,01/01/2000,final thing
+4,David,James,Williams,01/01/2000,thing4
+

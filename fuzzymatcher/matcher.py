@@ -76,10 +76,7 @@ class Matcher:
             rec = Record(fields_dict, this_id, self)
             self.right_records[this_id] = rec
 
-
-
     def match_all(self):
-
 
         # Get a dataset with id, record only for left and right
         self.data_preprocessor.preprocess()

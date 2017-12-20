@@ -9,3 +9,8 @@
 {"datetime": "2017-12-10T17:08:36.462037", "commit_hash": "1d74eee", "datagetter_cartesian": 0.92, "datagetter_sqlite": 0.89, "test_type": "left_3", "time_taken": 0.5987050510011613}
 {"datetime": "2017-12-10T17:08:48.684092", "commit_hash": "1d74eee", "datagetter_cartesian": 0.92, "datagetter_sqlite": 0.89, "test_type": "left_3", "time_taken": 0.5607335189997684}
 {"datetime": "2017-12-10T17:08:55.645271", "commit_hash": "1d74eee", "datagetter_cartesian": 0.92, "datagetter_sqlite": 0.89, "test_type": "left_3", "time_taken": 0.5696567740233149}
+{"datetime": "2017-12-20T08:49:46.559783", "commit_hash": "9d13df6", "datagetter_cartesian": 0.0, "datagetter_sqlite": 0.66, "test_type": "left_3", "time_taken": 0.13090573600493371}
+{"datetime": "2017-12-20T08:53:43.190434", "commit_hash": "9d13df6", "datagetter_cartesian": 0.0, "datagetter_sqlite": 0.66, "test_type": "left_3", "time_taken": 0.13246479799272493}
+{"datetime": "2017-12-20T08:54:42.085973", "commit_hash": "9d13df6", "datagetter_cartesian": "NA", "datagetter_sqlite": 0.6205, "test_type": "left_4", "time_taken": 24.26091426698258}
+{"datetime": "2017-12-20T08:58:01.843589", "commit_hash": "9d13df6", "datagetter_cartesian": 0.0, "datagetter_sqlite": 0.66, "test_type": "left_3", "time_taken": 0.13119038398144767}
+{"datetime": "2017-12-20T08:58:36.241364", "commit_hash": "9d13df6", "datagetter_cartesian": "NA", "datagetter_sqlite": 0.6205, "test_type": "left_4", "time_taken": 34.02364709501853}
