@@ -38,6 +38,35 @@ class DatagetterAccuracy(unittest.TestCase):
     They're not pass fail but they log how well the matcher is doing
     """
 
+    def test_data_1000(self):
+
+        m = Matcher()
+
+        df_left = pd.read_csv("tests/data/left_4.csv")
+        df_right = pd.read_csv("tests/data/right_4.csv")
+
+        on = ["first_name", "surname", "dob", "city"]
+
+        m.add_data(df_left, df_right, on, on)
+
+        start = timer()
+        m.match_all()
+        lt = m.get_formatted_link_table()
+        end = timer()
+        time_taken = end - start
+        sqlite_perc = link_table_percentage_correct(lt)
+
+        this_record = {}
+        this_record["datetime"] = datetime.datetime.now().isoformat()
+        this_record["commit_hash"] = get_commit_hash()
+        this_record["datagetter_cartesian"] = "NA"
+        this_record["datagetter_sqlite"] = sqlite_perc
+        this_record["test_type"] = "left_4"
+        this_record["time_taken"] = time_taken
+
+        with open("tests/datagetter_performance.txt", "a") as myfile:
+            myfile.writelines(json.dumps(this_record) + "\n")
+
     def test_data_100(self):
         dg = DataGetterCartesian()
         m = Matcher(data_getter = dg)

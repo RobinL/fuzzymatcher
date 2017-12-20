@@ -3,6 +3,7 @@ import pandas as pd
 import random
 import sqlite3
 import copy
+from functools import lru_cache
 
 from fuzzymatcher.record import Record
 from fuzzymatcher.utils import tokens_to_dmetaphones, add_dmetaphone_to_concat_all
@@ -16,9 +17,11 @@ class DataGetter:
     in 'df_search_within'
     """
 
-    def __init__(self, return_records_limit=100, search_intensity=100):
+    def __init__(self, return_records_limit=50, search_intensity=100, found_score_threshold = 0, found_num_records_threshold = 200):
         self.return_records_limit = return_records_limit
         self.search_intensity = search_intensity
+        self.found_score_threshold = found_score_threshold
+        self.found_num_records_threshold = found_num_records_threshold
 
     def add_data(self, matcher):
 
@@ -78,58 +81,84 @@ class DataGetter:
         tkn_po = self._tokens_in_df_right_prob_order(rec_left)
 
         # No point in running FTS using a token we know isn't in df_right
-        tkn_po = [t["token"] for t in tkn_po if t["prob"]>0]
+
 
         tkn_ms_po = self._tokens_in_df_right_prob_order(rec_left, misspelling=True)
-        tkn_ms_po = [t["token"] for t in tkn_ms_po if t["prob"]>0]
+
 
         # Start searching with all the terms, then drop them one at a time, starting with the most unusual term
-        # TODO: better to scan in blocks e.g. if tokens a b c d go [abcd] [abc] [bcd] [ab] [bc] [cd] [a] [b] [c] [d]
-        # TODO: It would make sense to score matches immediately.  Then if best score is high, don't serach further
-        # but is best score is low, we can search more intensely
-
-        token_lists = [tkn_po, tkn_po[::-1], tkn_ms_po, tkn_ms_po[::-1]]
+        token_lists = [tkn_po, tkn_ms_po]
 
         for token_list in token_lists:
-            matches = self._search_specific_to_general(token_list)
-            self._add_matches_to_potential_matches(matches, rec_left)
-            if len(rec_left.potential_matches.items()) > 2:
+            self._search_specific_to_general_single(token_list, rec_left)
+            if not self._found_enough_matches(rec_left):
+                self._search_specific_to_general_band(token_list, rec_left)
+            if self._found_enough_matches(rec_left):
                 break
 
         # If we cannot find a match, search random combinations
-        if len(rec_left.potential_matches.items())  == 0 and len(tkn_po) > 1:
+        if not self._found_good_match(rec_left):
             matches = self._search_random(tkn_po)
             self._add_matches_to_potential_matches(matches, rec_left)
 
     @staticmethod
     def _get_random_tokens(tokens):
         num_tokens = len(tokens)
+        if num_tokens == 0:
+            return ()
         n = random.randint(1, num_tokens)
         random_tokens = random.sample(tokens, n)
-        return random_tokens
+        return tuple(random_tokens)
 
-    def _search_specific_to_general(self, token_list):
-        new_matches = []
+    def _search_specific_to_general_single(self, token_list, rec_left):
+
         for i in range(len(token_list)):
             sub_tokens = token_list[i:]
-            new_matches = self._tokens_to_matches(sub_tokens)
-            # When we find a match, stop searching
-            if len(new_matches) > 0 and len(new_matches) < self.return_records_limit:
-                break
+            new_matches = self._tokens_to_matches(tuple(sub_tokens))
 
-        return new_matches
+            self._add_matches_to_potential_matches(new_matches, rec_left)
+            if self._found_enough_matches(rec_left):
+                return
+
+    def _search_specific_to_general_band(self, tokens, rec_left):
+        """
+        Search in blocks e.g. if tokens a b c d go [abcd] [abc] [bcd] [ab] [bc] [cd] [a] [b] [c] [d]
+        """
+        num_tokens = len(tokens)
+        for band_size in range(num_tokens, 0,-1):
+            take = num_tokens - band_size + 1
+            for start_pos in range(0, take):
+                end_pos = start_pos + band_size
+                search_tokens = tokens[start_pos:end_pos]
+                new_matches = self._tokens_to_matches(tuple(search_tokens))
+                self._add_matches_to_potential_matches(new_matches, rec_left)
+                if self._found_good_match(rec_left):
+                    return
+                if len(rec_left.potential_matches) > self.found_num_records_threshold:
+                    return
+
+    def _found_good_match(self, rec_left):
+        return rec_left.best_match_score > self.found_score_threshold
+
+    def _found_enough_matches(self, rec_left):
+        if rec_left.best_match_score > self.found_score_threshold:
+            return True
+        if len(rec_left.potential_matches) > self.found_num_records_threshold:
+            return True
+        return False
+
 
     def _search_random(self, token_list):
         matches = []
+        prev_random_tokens = set()
         for i in range(self.search_intensity):
             random_tokens = self._get_random_tokens(token_list)
-            matches = self._tokens_to_matches(random_tokens)
+            if random_tokens not in prev_random_tokens:
+                prev_random_tokens.add(random_tokens)
+                matches = self._tokens_to_matches(random_tokens)
             if len(matches) > 0:
                 break
         return matches
-
-    def _search_specific_to_general_band(token_list):
-        pass
 
     def _add_matches_to_potential_matches(self, matches, rec_left):
         for match in matches:
@@ -137,8 +166,10 @@ class DataGetter:
             if right_id not in rec_left.potential_matches:
                 scored_potential_match = self.matcher.scorer.score_match(rec_left.record_id, right_id)
                 rec_left.potential_matches[right_id] = scored_potential_match
+                if rec_left.best_match_score < scored_potential_match["match_score"]:
+                   rec_left.best_match_score = scored_potential_match["match_score"]
 
-
+    @lru_cache(maxsize=int(1e6))
     def _tokens_to_matches(self, tokens, misspelling = False):
 
         get_records_sql = """
@@ -163,8 +194,6 @@ class DataGetter:
 
         return results
 
-    def _remove_freq_zero_tokens(self, tokens):
-        return [t for t in tokens if self.matcher.scorer.get_prob_right(t) > 0]
 
     def _tokens_in_df_right_prob_order(self, rec_to_find_match_for, misspelling = False):
         # Problem here is that field names are different in left and right
@@ -182,6 +211,7 @@ class DataGetter:
                 prob = get_prob(t,translated_field,"right",misspelling)
                 tokens_list.append({"token": t, "prob": prob})
 
+        tokens_list = [t for t in tokens_list if t["prob"] is not None]
         tokens_list.sort(key=lambda x: x["prob"])
-
+        tokens_list = [t["token"] for t in tokens_list]
         return tokens_list

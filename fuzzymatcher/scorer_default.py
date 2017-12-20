@@ -42,7 +42,7 @@ class Scorer:
             if misspelling and left_right == "right":
                 return self.right_field_misspelling_probs_dict[field][token]
         except KeyError:
-            return 0
+            return None
 
     @lru_cache(maxsize=int(1e6))
     def score_match(self, record_left_id, record_right_id):
@@ -55,7 +55,6 @@ class Scorer:
         prob = 1
         for f_left in fields_left:
             p = self._field_to_prob(f_left, record_left, record_right)
-
             prob = p * prob
 
         match_score = self.prob_to_score(prob)
@@ -100,9 +99,11 @@ class Scorer:
         for umt in unmatching_tokens:
             if not self._is_misspelling_of_one(umt, record_tokens):
                 p = self.get_prob(umt,field_right,"right")
-                if p == 0: # If this token never appears on the right, how often does it appear on the left
+                if p is None: # If this token never appears on the right, how often does it appear on the left
                     p = self.get_prob(umt,field_left,"left")
                 prob = p * prob
+
+        prob = Scorer._adjust_prob_towards_one(prob)
         return 1/prob
 
     def _is_misspelling_of_one(self, token, token_list):
@@ -152,5 +153,5 @@ class Scorer:
         return -(log10(prob))/30
 
     @staticmethod
-    def _adjust_prob_towards_one(initial_prob, prob):
-        return initial_prob * 1/prob
+    def _adjust_prob_towards_one(initial_prob, amount = 2):
+        return initial_prob
