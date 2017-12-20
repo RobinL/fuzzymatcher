@@ -90,25 +90,15 @@ class DataGetter:
 
         token_lists = [tkn_po, tkn_po[::-1], tkn_ms_po, tkn_ms_po[::-1]]
 
-        new_matches = []
         for token_list in token_lists:
-            for i in range(len(token_list)):
-                sub_tokens = token_list[i:]
-                new_matches = self._tokens_to_matches(sub_tokens)
-                # When we find a match, stop searching
-                if len(new_matches) > 0 and len(new_matches) < self.return_records_limit:
-                    self._add_matches_to_potential_matches(new_matches, rec_left)
-                    break
-            if len(rec_left.potential_matches) > 2:
+            matches = self._search_specific_to_general(token_list)
+            self._add_matches_to_potential_matches(matches, rec_left)
+            if len(rec_left.potential_matches.items()) > 2:
                 break
 
         # If we cannot find a match, search random combinations
-        if len(new_matches) == 0 and len(tkn_po) > 1:
-            for i in range(self.search_intensity):
-                random_tokens = self._get_random_tokens(tkn_po)
-                matches = self._tokens_to_matches(random_tokens)
-                if len(matches) > 0:
-                    break
+        if len(rec_left.potential_matches.items())  == 0 and len(tkn_po) > 1:
+            matches = self._search_random(tkn_po)
             self._add_matches_to_potential_matches(matches, rec_left)
 
     @staticmethod
@@ -117,6 +107,29 @@ class DataGetter:
         n = random.randint(1, num_tokens)
         random_tokens = random.sample(tokens, n)
         return random_tokens
+
+    def _search_specific_to_general(self, token_list):
+        new_matches = []
+        for i in range(len(token_list)):
+            sub_tokens = token_list[i:]
+            new_matches = self._tokens_to_matches(sub_tokens)
+            # When we find a match, stop searching
+            if len(new_matches) > 0 and len(new_matches) < self.return_records_limit:
+                break
+
+        return new_matches
+
+    def _search_random(self, token_list):
+        matches = []
+        for i in range(self.search_intensity):
+            random_tokens = self._get_random_tokens(token_list)
+            matches = self._tokens_to_matches(random_tokens)
+            if len(matches) > 0:
+                break
+        return matches
+
+    def _search_specific_to_general_band(token_list):
+        pass
 
     def _add_matches_to_potential_matches(self, matches, rec_left):
         for match in matches:
