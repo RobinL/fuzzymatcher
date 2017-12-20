@@ -4,8 +4,9 @@ from fuzzywuzzy import fuzz
 
 class TokenComparison:
 
-    def __init__(self, fuzz_ratio_threshold = 80):
+    def __init__(self, fuzz_ratio_threshold = 80, number_fuzz_threshold = 1.01):
         self.fuzz_ratio_threshold = fuzz_ratio_threshold
+        self.number_fuzz_threshold = number_fuzz_threshold
 
     @lru_cache(maxsize=int(1e6))
     def get_misspellings(self, token):
@@ -30,6 +31,17 @@ class TokenComparison:
         if token1.isalpha() and token2.isalpha():
             if fuzz.ratio(token1, token2) > self.fuzz_ratio_threshold:
                 return True
+
+        try:
+            t1f = float(token1)
+            t2f = float(token2)
+            if max(t1f, t2f)/min(t1f, t2f) < self.number_fuzz_threshold:
+                return True
+
+        except ValueError:
+            pass
+
+
 
         return False
 
