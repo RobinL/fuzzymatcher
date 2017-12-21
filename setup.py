@@ -2,7 +2,7 @@ from setuptools import setup
 
 # see https://stackoverflow.com/questions/14399534/reference-requirements-txt-for-the-install-requires-kwarg-in-setuptools-setup-py
 setup(name='fuzzymatcher',
-      version='0.0.2',
+      version='0.0.3',
       description='Fuzzy match two pandas dataframes based on one or more common fields',
       url='https://github.com/RobinL/fuzzymatcher',
       author='Robin Linacre',
@@ -12,5 +12,5 @@ setup(name='fuzzymatcher',
       install_requires=['pandas', 'metaphone', 'python-Levenshtein', 'fuzzywuzzy', 'python-dateutil'],
       test_requires=["pylint", "coverage", "codecov"],
       keywords=["matching", "fuzzy", "probabalistic", "recordlinking", "fuzzymatching"],
-      download_url = 'https://github.com/RobinL/fuzzymatcher/archive/v0.0.2.tar.gz',
+      download_url = 'https://github.com/RobinL/fuzzymatcher/archive/v0.0.3.tar.gz',
       zip_safe=False)
