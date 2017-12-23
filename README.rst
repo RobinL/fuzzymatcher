@@ -57,7 +57,7 @@ Suppose you have a table called ``df_left`` which looks like this:
 And you want to link it to a table ``df_right`` that looks like this:
 
 ====  =========================
-  id 
+  id  os_name
 ====  =========================
    0  Darlington (B)
    1  Havering London Boro
