@@ -7,16 +7,17 @@ from fuzzymatcher.data_getter_abc import DataGetterABC
 class DataGetterCartesian(DataGetterABC):
 
     """
-    A DataGetter handles the retrieval of data from 'df_search_within'
-    It retrieves lists of potential matches to a record in 'df_find_match_for'
-    in 'df_search_within'
+    The DataGetter class handles the retrieval of record_ids from 'df_right'
+
+    This Cartesian datagetter is the simplest, most thorough, but least efficient implementation
+    where every record_id in 'df_right' is returned, compared and scored against 'df_left', leading to n^2 complexity.
+
     """
 
     def add_data(self, matcher):
 
-        """Adds the data in 'matcher.df_search_within' to a sqlite database
-        and create a connection to the database to be used by the data getter
-        Also registers the match object on the datagetter.
+        """
+        Registers the matcher on the datagetter so the datagetter can manipulate the matcher object
 
         Args:
             matcher.  The matcher object
@@ -32,7 +33,7 @@ class DataGetterCartesian(DataGetterABC):
         """Retrieves lists of potential matches to a record
 
         Args:
-            rec_find_match_for: The record for which we're trying to find a match
+            rec_left: The record for which we're trying to find a match
 
         Returns:
             A list of rec_potential_match records which represent the potential matches
