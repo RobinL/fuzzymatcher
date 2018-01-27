@@ -4,6 +4,14 @@ import random
 import re
 
 class Record:
+    """
+    The 'record' objects represents a row of a dataset.
+    A row is represented as a dictionary called 'field dict', whose keys are the column (field) names
+    and whose values are the column values.
+
+    The record object has methods to clean (homogenise) and tokenise these column values.
+    The record object also has a dictionary similar to field dict that contains token misspellings
+    """
 
     def __init__(self, field_dict, record_id, matcher):
         self.orig_field_dict = field_dict

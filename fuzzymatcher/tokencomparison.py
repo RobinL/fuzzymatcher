@@ -3,6 +3,9 @@ from metaphone import doublemetaphone
 from fuzzywuzzy import fuzz
 
 class TokenComparison:
+    """
+    The tokencomparison object contains functions that check for other misspellings and 'close' matches
+    """
 
     def __init__(self, fuzz_ratio_threshold = 80, number_fuzz_threshold = 1.01):
         self.fuzz_ratio_threshold = fuzz_ratio_threshold
