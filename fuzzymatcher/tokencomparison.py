@@ -41,7 +41,7 @@ class TokenComparison:
             if max(t1f, t2f)/min(t1f, t2f) < self.number_fuzz_threshold:
                 return True
 
-        except ValueError:
+        except (ValueError, ZeroDivisionError):
             pass
 
 
