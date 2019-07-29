@@ -2,7 +2,7 @@ from setuptools import setup
 
 # see https://stackoverflow.com/questions/14399534/reference-requirements-txt-for-the-install-requires-kwarg-in-setuptools-setup-py
 setup(name='fuzzymatcher',
-      version='0.0.3',
+      version='0.0.4',
       description='Fuzzy match two pandas dataframes based on one or more common fields',
       url='https://github.com/RobinL/fuzzymatcher',
       author='Robin Linacre',
