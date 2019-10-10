@@ -1,5 +1,14 @@
 from metaphone import doublemetaphone
-from Levenshtein import ratio
+import warnings
+
+try:
+    from Levenshtein import ratio
+    levenshtein_installed = True
+except ImportError:
+    from difflib import SequenceMatcher
+    levenshtein_installed = False
+    warnings.warn('Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning')
+
 
 def tokens_to_dmetaphones(tokens):
     new_tokens = []
@@ -40,7 +49,13 @@ def is_mispelling(token_left, token_right):
     if len(dml.intersection(dmr).difference({''})) > 0:
         return True
 
-    if ratio(token_left, token_right) >= 0.9:
+    if levenshtein_installed:
+        this_ratio = ratio(token_left, token_right)
+    else:
+        sm = SequenceMatcher(None, "hi", "hit")
+        this_ratio = sm.ratio(token_left, token_right)
+
+    if this_ratio >= 0.9:
         return True
 
     return False
