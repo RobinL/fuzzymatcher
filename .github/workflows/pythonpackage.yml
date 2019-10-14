@@ -30,4 +30,10 @@ jobs:
 #         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with unittest
       run: |
-        python run -m unittest discover
+        python -m unittest discover
+    - uses: codecov/codecov-action@v1.0.2
+      with:
+        token: ${{secrets.CODECOV_TOKEN}} #required
+        file: ./coverage.xml #optional
+        flags: unittests #optional
+        name: codecov-umbrella #optional
