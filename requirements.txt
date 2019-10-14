@@ -1,5 +1,4 @@
 pandas>=0.20.3
 metaphone
-python-Levenshtein
 fuzzywuzzy
 python-dateutil
