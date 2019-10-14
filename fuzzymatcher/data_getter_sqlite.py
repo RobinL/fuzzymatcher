@@ -177,9 +177,20 @@ class DataGetter:
             """
 
         # This fails if the special tokens 'and' or 'or' are in fts string!  See issue 35!
-        tokens_to_remove = ["AND", "OR"]
-        tokens = [t for t in tokens if t not in tokens_to_remove]
+        tokens_to_escape = ["AND", "OR", "NEAR"]
+
+        def escape_token(t):
+            # return t
+            if t in tokens_to_escape:
+                return '"' + t + '"'
+            else:
+                return t
+
+
+        tokens = [escape_token(t) for t in tokens]
+
         fts_string = " ".join(tokens)
+
 
         if misspelling:
             table_name = "_concat_all_alternatives"
@@ -187,6 +198,7 @@ class DataGetter:
             table_name = "_concat_all"
 
         sql = get_records_sql.format(table_name, fts_string, self.return_records_limit)
+
 
         cur = self.con.cursor()
         cur.execute(sql)
