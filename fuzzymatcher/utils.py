@@ -1,13 +1,7 @@
 from metaphone import doublemetaphone
 import warnings
 
-try:
-    from Levenshtein import ratio
-    levenshtein_installed = True
-except ImportError:
-    from difflib import SequenceMatcher
-    levenshtein_installed = False
-    warnings.warn('Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning')
+from fuzzywuzzy.fuzz import ratio
 
 
 def tokens_to_dmetaphones(tokens):
