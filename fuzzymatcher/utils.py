@@ -49,7 +49,7 @@ def is_mispelling(token_left, token_right):
         sm = SequenceMatcher(None, "hi", "hit")
         this_ratio = sm.ratio(token_left, token_right)
 
-    if this_ratio >= 0.9:
+    if this_ratio >= 90:
         return True
 
     return False
