@@ -1,8 +1,5 @@
 from metaphone import doublemetaphone
-import warnings
-
 from fuzzywuzzy.fuzz import ratio
-
 
 def tokens_to_dmetaphones(tokens):
     new_tokens = []
@@ -43,13 +40,7 @@ def is_mispelling(token_left, token_right):
     if len(dml.intersection(dmr).difference({''})) > 0:
         return True
 
-    if levenshtein_installed:
-        this_ratio = ratio(token_left, token_right)
-    else:
-        sm = SequenceMatcher(None, "hi", "hit")
-        this_ratio = sm.ratio(token_left, token_right)
-
-    if this_ratio >= 90:
+    if ratio(token_left, token_right) >= 90:
         return True
 
     return False
