@@ -1,15 +1,9 @@
 .. image:: https://badge.fury.io/py/fuzzymatcher.svg
     :target: https://badge.fury.io/py/fuzzymatcher
 
-.. image:: https://travis-ci.org/RobinL/fuzzymatcher.svg?branch=dev
-    :target: https://travis-ci.org/RobinL/fuzzymatcher
-
 .. image:: https://codecov.io/gh/RobinL/fuzzymatcher/branch/dev/graph/badge.svg
   :target: https://codecov.io/gh/RobinL/fuzzymatcher
 
-.. image:: https://readthedocs.org/projects/fuzzymatcher/badge/?version=latest
-    :target: http://fuzzymatcher.readthedocs.io/en/latest/
-    :alt: Documentation Status
 
 
 fuzzymatcher
