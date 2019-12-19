@@ -177,7 +177,7 @@ class DataGetter:
             """
 
         # This fails if the special tokens 'and' or 'or' are in fts string!  See issue 35!
-        tokens_to_escape = ["AND", "OR", "NEAR"]
+        tokens_to_escape = ["AND", "OR", "NEAR", "NOT"]
 
         def escape_token(t):
             # return t
