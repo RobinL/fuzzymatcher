@@ -1,5 +1,5 @@
 from metaphone import doublemetaphone
-from fuzzywuzzy.fuzz import ratio
+from rapidfuzz.fuzz import ratio
 
 def tokens_to_dmetaphones(tokens):
     new_tokens = []
@@ -40,7 +40,7 @@ def is_mispelling(token_left, token_right):
     if len(dml.intersection(dmr).difference({''})) > 0:
         return True
 
-    if ratio(token_left, token_right) >= 90:
+    if ratio(token_left, token_right, score_cutoff=90) >= 90:
         return True
 
     return False

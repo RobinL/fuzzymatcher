@@ -1,6 +1,6 @@
 from functools import lru_cache
 from metaphone import doublemetaphone
-from fuzzywuzzy import fuzz
+from rapidfuzz import fuzz
 
 class TokenComparison:
     """
@@ -32,7 +32,7 @@ class TokenComparison:
 
         # Misspellings only really make sense if the tokens are words not numbers
         if token1.isalpha() and token2.isalpha():
-            if fuzz.ratio(token1, token2) > self.fuzz_ratio_threshold:
+            if fuzz.ratio(token1, token2, score_cutoff=self.fuzz_ratio_threshold) > self.fuzz_ratio_threshold:
                 return True
 
         try:
