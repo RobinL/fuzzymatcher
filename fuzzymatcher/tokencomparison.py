@@ -1,6 +1,6 @@
 from functools import lru_cache
 from metaphone import doublemetaphone
-from fuzzywuzzy import fuzz
+from rapidfuzz import fuzz
 
 class TokenComparison:
     """
