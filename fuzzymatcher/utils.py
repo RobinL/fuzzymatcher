@@ -1,5 +1,5 @@
 from metaphone import doublemetaphone
-from fuzzywuzzy.fuzz import ratio
+from rapidfuzz.fuzz import ratio
 
 def tokens_to_dmetaphones(tokens):
     new_tokens = []
