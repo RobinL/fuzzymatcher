@@ -1,4 +1,4 @@
 pandas>=0.20.3
 metaphone
-fuzzywuzzy
+rapidfuzz
 python-dateutil
