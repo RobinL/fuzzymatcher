@@ -5,10 +5,10 @@
   :target: https://codecov.io/gh/RobinL/fuzzymatcher
 
 
-**Note:  fuzzymatcher is no longer actively maintained.  Please see** `splink <https://github.com/moj-analytical-services/splink>`_ **for a more accurate, scalable and performant solution**
-
 fuzzymatcher
 ======================================
+
+**Note:  fuzzymatcher is no longer actively maintained.  Please see** `splink <https://github.com/moj-analytical-services/splink>`_ **for a more accurate, scalable and performant solution**
 
 A Python package that allows the user to fuzzy match two pandas dataframes based on one or more common fields.
 
