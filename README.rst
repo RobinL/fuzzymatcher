@@ -5,7 +5,7 @@
   :target: https://codecov.io/gh/RobinL/fuzzymatcher
 
 
-**Note:  `fuzzymatcher` is no longer actively maintained.  Please see [splink](https://github.com/moj-analytical-services/splink) for a more accurate, scalable and performant solution **
+**Note:  `fuzzymatcher` is no longer actively maintained.  Please see [splink](https://github.com/moj-analytical-services/splink) for a more accurate, scalable and performant solution**
 
 fuzzymatcher
 ======================================
